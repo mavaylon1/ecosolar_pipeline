@@ -1,5 +1,12 @@
 from dotenv import load_dotenv
-load_dotenv()
+from pathlib import Path
+load_dotenv(Path.home() / ".env")
+
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+)
 
 from flask import Flask, request, jsonify
 from pipeline.runner import run_pipeline

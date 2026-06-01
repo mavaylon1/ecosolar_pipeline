@@ -65,6 +65,118 @@ def _use_type(job: dict) -> dict:
     return {"residential": not commercial, "commercial": commercial}
 
 
+def build_field_log(job: dict, contact: dict) -> list[dict]:
+    """
+    Returns a list of entries showing exactly which JNB field fed each PDF field,
+    what value was used, and whether it was found, a fallback, or missing.
+    """
+    entries = []
+
+    def row(pdf_field, jnb_source, value, note=None):
+        if value is None or value == "" or value == []:
+            status = "MISSING"
+            display = "(missing)"
+        else:
+            status = note if note else "found"
+            display = str(value)
+        entries.append({
+            "pdf_field": pdf_field,
+            "jnb_source": jnb_source,
+            "value": display,
+            "status": status,
+        })
+
+    # Property address
+    row("Job Address",
+        "job: address_line1, city, state_text, zip",
+        _job_address(job))
+
+    # Homeowner
+    owner_name = (
+        f"{contact.get('first_name', '')} {contact.get('last_name', '')}".strip()
+        or contact.get("display_name", "")
+    )
+    row("Property Owner", "contact: first_name + last_name", owner_name)
+
+    phone_src = ("home_phone" if contact.get("home_phone")
+                 else "mobile_phone" if contact.get("mobile_phone")
+                 else "work_phone")
+    owner_phone = contact.get("home_phone") or contact.get("mobile_phone") or contact.get("work_phone")
+    row("HO Phone (Phone No / undefined)", f"contact: {phone_src}", owner_phone)
+
+    row("HO Email", "contact: email", contact.get("email"))
+
+    # Property type
+    prop_type = job.get("Property Type", "")
+    use = _use_type(job)
+    row("Residential / Commercial (checkboxes)",
+        "job: Property Type",
+        prop_type,
+        note=f"→ residential={use['residential']}, commercial={use['commercial']}")
+
+    # Permit types
+    row("Electrical (checkbox)", "[hardcoded: always true]", "✓", note="hardcoded")
+    row("Solar (checkbox)",      "[hardcoded: always true]", "✓", note="hardcoded")
+
+    # Contractor (static)
+    row("Contractor",                     "[static]", _CONTRACTOR["contractor_name"], note="static")
+    row("Contractor Phone (No_2 / undef_2)", "[static]", _CONTRACTOR["contractor_phone"], note="static")
+    row("State License",                  "[static]", _CONTRACTOR["contractor_license"], note="static")
+    row("Class",                          "[static]", ", ".join(_CONTRACTOR["contractor_class"]), note="static")
+
+    # Applicant (static)
+    row("Applicant",                      "[static]", _APPLICANT["applicant_name"], note="static")
+    row("Applicant Phone (No_3 / undef_3)", "[static]", _APPLICANT["applicant_phone"], note="static")
+    row("Applicant Address",              "[static]", _APPLICANT["applicant_address"], note="static")
+    row("Applicant Email",                "[static]", _APPLICANT["applicant_email"], note="static")
+
+    # Job description (engineer-entered)
+    row("Job Description 1/2/3", "job: job_description", job.get("job_description"))
+
+    # Panel count
+    row("Panel Count (undefined_4)", "job: Number Panels", job.get("Number Panels"))
+
+    # kW — AC preferred, DC fallback
+    kw_ac = job.get("system_kw_ac")
+    kw_dc = job.get("System size DC")
+    if kw_ac:
+        row("System kW (undefined_5)", "job: system_kw_ac", kw_ac)
+    elif kw_dc:
+        row("System kW (undefined_5)", "job: System size DC", kw_dc, note="fallback — system_kw_ac missing")
+    else:
+        row("System kW (undefined_5)", "job: system_kw_ac / System size DC", None)
+
+    # Existing panels (engineer-entered)
+    row("Existing Solar (radio)", "job: existing_panels", job.get("existing_panels"))
+
+    # Structure checkboxes (engineer-entered)
+    row("Structure checkboxes (Main/Garage/Patio/Accessory)",
+        "job: structure", job.get("structure"))
+
+    return entries
+
+
+def format_field_log(entries: list[dict], job: dict) -> str:
+    lines = [
+        f"FIELD MAPPING LOG — {job.get('name', '')} | {job.get('jnid', '')}",
+        "",
+        f"{'PDF FIELD':<48} {'JNB SOURCE':<42} {'VALUE':<30} STATUS",
+        "─" * 130,
+    ]
+    for e in entries:
+        lines.append(
+            f"{e['pdf_field']:<48} {e['jnb_source']:<42} {e['value']:<30} {e['status']}"
+        )
+    missing = [e for e in entries if e["status"] == "MISSING"]
+    lines += [
+        "",
+        f"Total fields: {len(entries)}  |  Missing: {len(missing)}",
+    ]
+    if missing:
+        lines.append("Missing: " + ", ".join(e["pdf_field"] for e in missing))
+    return "\n".join(lines)
+
+
 def build_permit_data(job: dict, contact: dict) -> dict:
     owner_name = (
         f"{contact.get('first_name', '')} {contact.get('last_name', '')}".strip()

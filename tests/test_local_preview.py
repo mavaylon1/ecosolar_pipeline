@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 load_dotenv(Path.home() / ".env")
 
 from pipeline import jnb_client
-from pipeline.transformer import build_permit_data
+from pipeline.transformer import build_permit_data, build_field_log, format_field_log
 from forms.registry import get_form
 from forms.fill import fill_pdf_form
 
@@ -67,18 +67,21 @@ def test_transformer_output(jnid):
             print(f"  {k}: (not present)")
 
     permit_data = build_permit_data(job, contact)
+    entries = build_field_log(job, contact)
+    log_text = format_field_log(entries, job)
 
-    print("\n" + "=" * 60)
-    print("PERMIT DATA → PDF FILLER INPUT")
-    print("=" * 60)
-    print(json.dumps(permit_data, indent=2))
+    print("\n" + log_text)
 
-    # Save permit_data to output/ for reference
     out_dir = Path(__file__).parent.parent / "output"
     out_dir.mkdir(exist_ok=True)
+
+    log_path = out_dir / f"field_log_{jnid}.txt"
+    log_path.write_text(log_text)
+    print(f"\nField log saved to: {log_path}")
+
     data_path = out_dir / f"permit_data_{jnid}.json"
     data_path.write_text(json.dumps(permit_data, indent=2))
-    print(f"\nPermit data saved to: {data_path}")
+    print(f"Permit data saved to: {data_path}")
 
 
 def test_pdf_output(jnid):
@@ -89,6 +92,7 @@ def test_pdf_output(jnid):
     contact = jnb_client.get_contact(contact_jnid) if contact_jnid else {}
 
     permit_data = build_permit_data(job, contact)
+    entries = build_field_log(job, contact)
     jurisdiction = permit_data["project"]["jurisdiction"]
     form = get_form(jurisdiction)
 
@@ -112,6 +116,9 @@ def test_pdf_output(jnid):
     print(json.dumps(report, indent=2))
     print(f"\nPDF saved to: {output_path}")
     print("Open it to verify the output looks correct.")
+
+    log_path = out_dir / f"field_log_{jnid}.txt"
+    log_path.write_text(format_field_log(entries, job))
 
     if report["issues"]:
         print("\nWARNINGS (missing fields — expected for jobs without all custom fields filled):")

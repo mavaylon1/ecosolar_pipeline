@@ -11,6 +11,8 @@ a real job once an engineer has populated them.
   - system_kw_ac      → solar.solar_kw_ac
 """
 
+import math
+
 # Static EcoSolar contractor info — update if it ever changes
 _CONTRACTOR = {
     "contractor_name": "Ecosolar USA Electric LLC",
@@ -57,6 +59,17 @@ def _job_address(job: dict) -> str:
         job.get("zip", ""),
     ]
     return ", ".join(p for p in parts if p)
+
+
+def _calc_valuation(job: dict) -> str:
+    kw_raw = job.get("system_kw_ac") or job.get("System size DC") or 0
+    batteries = int(job.get("Number of Battery") or 0)
+    try:
+        kw = float(kw_raw)
+    except (ValueError, TypeError):
+        return ""
+    total = round(kw) * 2000 + batteries * 2500
+    return str(total)
 
 
 def _use_type(job: dict) -> dict:
@@ -130,6 +143,13 @@ def build_field_log(job: dict, contact: dict) -> list[dict]:
     row("Applicant Address",              "[static]", _APPLICANT["applicant_address"], note="static")
     row("Applicant Email",                "[static]", _APPLICANT["applicant_email"], note="static")
 
+    # Valuation (calculated)
+    batteries = job.get("Number of Battery") or 0
+    row("Valuation",
+        "calculated: round(kW)×$2000 + batteries×$2500",
+        _calc_valuation(job),
+        note=f"kW={job.get('system_kw_ac') or job.get('System size DC') or '?'}, batteries={batteries}")
+
     # Job description (engineer-entered)
     row("Job Description 1/2/3", "job: job_description", job.get("job_description"))
 
@@ -196,7 +216,7 @@ def build_permit_data(job: dict, contact: dict) -> dict:
             "jurisdiction": job.get("city", ""),
             "form_type": "solar_permit_application",
             "job_description": job.get("job_description", ""),
-            "valuation": "",
+            "valuation": _calc_valuation(job),
             "use_type": _use_type(job),
             "permit_types": {
                 "building": False,

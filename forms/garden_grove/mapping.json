@@ -1,0 +1,126 @@
+{
+  "template_id": "garden_grove_application_v2020_09_24",
+  "mode": "fillable_acroform",
+  "fields": {
+    "property.job_address": {
+      "pdf_field_name": "Job Address",
+      "required": true
+    },
+    "project.use_type.residential": {
+      "pdf_field_name": "Residential",
+      "type": "checkbox"
+    },
+    "project.use_type.commercial": {
+      "pdf_field_name": "Commercial",
+      "type": "checkbox"
+    },
+    "owner.property_owner": {
+      "pdf_field_name": "Property Owner",
+      "required": true
+    },
+    "owner.homeowner_phone": {
+      "pdf_field_names": ["Phone No", "undefined"],
+      "transform": "phone_area_rest"
+    },
+    "contractor.contractor_name": {
+      "pdf_field_name": "Contractor",
+      "required": true
+    },
+    "contractor.contractor_phone": {
+      "pdf_field_names": ["Phone No_2", "undefined_2"],
+      "transform": "phone_area_rest"
+    },
+    "contractor.contractor_license": {
+      "pdf_field_name": "State License",
+      "required": true
+    },
+    "contractor.contractor_class": {
+      "pdf_field_name": "Class"
+    },
+    "contractor.business_tax": {
+      "pdf_field_name": "Business Tax"
+    },
+    "applicant.applicant_name": {
+      "pdf_field_name": "Applicant",
+      "required": true
+    },
+    "applicant.applicant_phone": {
+      "pdf_field_names": ["Phone No_3", "undefined_3"],
+      "transform": "phone_area_rest"
+    },
+    "applicant.applicant_address": {
+      "pdf_field_name": "Address"
+    },
+    "applicant.applicant_email": {
+      "pdf_field_name": "Email"
+    },
+    "project.permit_types.building": {
+      "pdf_field_name": "Building",
+      "type": "checkbox"
+    },
+    "project.permit_types.electrical": {
+      "pdf_field_name": "Electrical",
+      "type": "checkbox"
+    },
+    "project.permit_types.mechanical": {
+      "pdf_field_name": "Mechanical",
+      "type": "checkbox"
+    },
+    "project.permit_types.plumbing": {
+      "pdf_field_name": "Plumbing",
+      "type": "checkbox"
+    },
+    "project.permit_types.fire": {
+      "pdf_field_name": "Fire",
+      "type": "checkbox"
+    },
+    "project.permit_types.solar": {
+      "pdf_field_name": "Solar",
+      "type": "checkbox"
+    },
+    "project.permit_types.demo": {
+      "pdf_field_name": "Demo",
+      "type": "checkbox"
+    },
+    "project.job_description": {
+      "pdf_field_names": ["Job Description 1", "Job Description 2", "Job Description 3"],
+      "wrap_width": 95,
+      "required": true
+    },
+    "project.valuation": {
+      "pdf_field_name": "Valuation"
+    },
+    "solar.solar_panel_count": {
+      "pdf_field_name": "undefined_4"
+    },
+    "solar.solar_kw": {
+      "pdf_field_name": "undefined_5"
+    },
+    "reroof.structures.main_structure": {
+      "pdf_field_name": "Main Structure",
+      "type": "checkbox"
+    },
+    "reroof.structures.garage": {
+      "pdf_field_name": "Garage",
+      "type": "checkbox"
+    },
+    "reroof.structures.patio": {
+      "pdf_field_name": "Patio",
+      "type": "checkbox"
+    },
+    "reroof.structures.accessory_structure": {
+      "pdf_field_name": "Accessory Structure",
+      "type": "checkbox"
+    },
+    "solar.existing_solar_on_roof": {
+      "pdf_field_name": "Are there solar panels installed on the roof",
+      "type": "radio"
+    },
+    "signature.signature": {
+      "pdf_field_name": "SIGNATURE"
+    },
+    "signature.date": {
+      "pdf_field_name": "DATE"
+    }
+  }
+}

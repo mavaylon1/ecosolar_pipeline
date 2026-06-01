@@ -72,9 +72,11 @@ def _calc_valuation(job: dict) -> str:
     return str(total)
 
 
+_COMMERCIAL_TYPES = {"commercial building"}
+
 def _use_type(job: dict) -> dict:
-    prop_type = (job.get("Property Type") or "").lower()
-    commercial = "commercial" in prop_type
+    prop_type = (job.get("Property Type") or "").strip().lower()
+    commercial = prop_type in _COMMERCIAL_TYPES
     return {"residential": not commercial, "commercial": commercial}
 
 

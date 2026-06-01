@@ -43,8 +43,8 @@ def test_transformer_output(jnid):
     print("=" * 60)
     relevant_job_keys = [
         "jnid", "name", "address_line1", "city", "state_text", "zip",
-        "Property Type", "Number Panels", "System size DC",
-        "job_description", "structure", "existing_panels", "system_kw_ac",
+        "Property Type", "Number Panels", "System size DC", "system_kw_ac",
+        "job_description", "structure", "existing_panels",
     ]
     for k in relevant_job_keys:
         if k in job:

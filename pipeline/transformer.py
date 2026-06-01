@@ -108,7 +108,11 @@ def build_permit_data(job: dict, contact: dict) -> dict:
         "applicant": _APPLICANT,
         "solar": {
             "solar_panel_count": job.get("Number Panels") or "",
-            "solar_kw_ac": job.get("system_kw_ac", ""),
+            "solar_kw_ac": (
+                job.get("system_kw_ac")
+                or job.get("System size DC")
+                or ""
+            ),
             "existing_solar_on_roof": job.get("existing_panels", "No"),
         },
         "reroof": {

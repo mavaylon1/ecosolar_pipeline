@@ -13,8 +13,8 @@ a real job once an engineer has populated them.
 
 # Static EcoSolar contractor info — update if it ever changes
 _CONTRACTOR = {
-    "contractor_name": "EcoSolar USA Electric LLC",
-    "contractor_phone": "7145550100",
+    "contractor_name": "Ecosolar USA Electric LLC",
+    "contractor_phone": "7142659077",
     "contractor_license": "1045300",
     "contractor_class": ["C10", "C46"],
     "business_tax": "",
@@ -23,8 +23,8 @@ _CONTRACTOR = {
 # Static applicant (permit coordinator)
 _APPLICANT = {
     "applicant_name": "Allysa Dizon",
-    "applicant_phone": "7145550123",
-    "applicant_address": "",
+    "applicant_phone": "6576295991",
+    "applicant_address": "13902 Harbor Blvd, Unit 2A, Garden Grove CA 92843",
     "applicant_email": "permit@ecosolarusa.com",
 }
 

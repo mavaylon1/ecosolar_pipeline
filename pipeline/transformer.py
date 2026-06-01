@@ -66,15 +66,17 @@ def _use_type(job: dict) -> dict:
 
 
 def build_permit_data(job: dict, contact: dict) -> dict:
+    owner_name = (
+        f"{contact.get('first_name', '')} {contact.get('last_name', '')}".strip()
+        or contact.get("display_name", "")
+    )
     owner_phone = (
         contact.get("home_phone")
         or contact.get("mobile_phone")
         or contact.get("work_phone")
         or ""
     )
-    owner_name = contact.get("display_name") or (
-        f"{contact.get('first_name', '')} {contact.get('last_name', '')}".strip()
-    )
+    owner_email = contact.get("email", "")
 
     return {
         "project": {
@@ -100,11 +102,12 @@ def build_permit_data(job: dict, contact: dict) -> dict:
         "owner": {
             "property_owner": owner_name,
             "homeowner_phone": owner_phone,
+            "homeowner_email": owner_email,
         },
         "contractor": _CONTRACTOR,
         "applicant": _APPLICANT,
         "solar": {
-            "solar_panel_count": job.get("Number Panels") or job.get("cf_long_1") or "",
+            "solar_panel_count": job.get("Number Panels") or "",
             "solar_kw_ac": job.get("system_kw_ac", ""),
             "existing_solar_on_roof": job.get("existing_panels", "No"),
         },

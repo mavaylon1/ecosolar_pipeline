@@ -93,7 +93,7 @@
     "solar.solar_panel_count": {
       "pdf_field_name": "undefined_4"
     },
-    "solar.solar_kw": {
+    "solar.solar_kw_ac": {
       "pdf_field_name": "undefined_5"
     },
     "reroof.structures.main_structure": {

@@ -23,10 +23,6 @@ from forms.registry import get_form
 from forms.fill import fill_pdf_form
 
 
-def pytest_addoption(parser):
-    parser.addoption("--jnid", action="store", default=None, help="JNB job JNID to preview")
-
-
 @pytest.fixture
 def jnid(request):
     val = request.config.getoption("--jnid") or os.environ.get("PREVIEW_JNID")
@@ -38,7 +34,8 @@ def jnid(request):
 def test_transformer_output(jnid):
     """Prints the raw JNB job + contact, then the permit data going into the PDF filler."""
     job = jnb_client.get_job(jnid)
-    contact_jnid = job.get("primary") or job.get("customer")
+    raw = job.get("primary") or job.get("customer")
+    contact_jnid = raw.get("id") if isinstance(raw, dict) else raw
     contact = jnb_client.get_contact(contact_jnid) if contact_jnid else {}
 
     print("\n" + "=" * 60)
@@ -87,7 +84,8 @@ def test_transformer_output(jnid):
 def test_pdf_output(jnid):
     """Fills the PDF and saves it to output/ for visual inspection."""
     job = jnb_client.get_job(jnid)
-    contact_jnid = job.get("primary") or job.get("customer")
+    raw = job.get("primary") or job.get("customer")
+    contact_jnid = raw.get("id") if isinstance(raw, dict) else raw
     contact = jnb_client.get_contact(contact_jnid) if contact_jnid else {}
 
     permit_data = build_permit_data(job, contact)

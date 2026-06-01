@@ -3,6 +3,13 @@ import tempfile
 from pathlib import Path
 
 from pipeline import jnb_client
+
+
+def _extract_jnid(value) -> str | None:
+    """JNB returns related records as either a plain string ID or a dict with an 'id' key."""
+    if isinstance(value, dict):
+        return value.get("id")
+    return value
 from pipeline.transformer import build_permit_data
 from forms.registry import get_form
 from forms.fill import fill_pdf_form
@@ -11,7 +18,7 @@ from forms.fill import fill_pdf_form
 def run_pipeline(jnid: str) -> dict:
     job = jnb_client.get_job(jnid)
 
-    contact_jnid = job.get("primary") or job.get("customer")
+    contact_jnid = _extract_jnid(job.get("primary") or job.get("customer"))
     if not contact_jnid:
         raise ValueError(f"Job {jnid} has no linked contact")
     contact = jnb_client.get_contact(contact_jnid)

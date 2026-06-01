@@ -1,0 +1,35 @@
+name: Daily Tests
+
+on:
+  schedule:
+    - cron: "0 14 * * *"  # 9am PT / noon ET daily
+  workflow_dispatch:        # allow manual trigger from GitHub UI
+
+jobs:
+  tier1-unit:
+    name: "Tier 1 — Unit Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: pytest tests/test_unit.py -v
+
+  tier2-integration:
+    name: "Tier 2 — Integration (read-only JNB)"
+    runs-on: ubuntu-latest
+    needs: tier1-unit
+    env:
+      JOBNIMBUS_API_KEY: ${{ secrets.JOBNIMBUS_API_KEY }}
+      # Garden Grove job used as stable read-only fixture
+      # Override via GitHub Actions variable PREVIEW_JNID if needed
+      PREVIEW_JNID: ${{ vars.PREVIEW_JNID || '132f8a31349541118fa4fb380e9ac75c' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: pytest tests/test_local_preview.py -s --jnid ${{ env.PREVIEW_JNID }}

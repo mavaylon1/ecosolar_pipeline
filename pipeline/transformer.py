@@ -62,7 +62,9 @@ def _job_address(job: dict) -> str:
 
 
 def _calc_valuation(job: dict) -> str:
-    kw_raw = job.get("system_kw_ac") or job.get("System size DC") or 0
+    kw_raw = job.get("system_kw_ac") or job.get("System size DC")
+    if not kw_raw:
+        return ""
     batteries = int(job.get("Number of Battery") or 0)
     try:
         kw = float(kw_raw)

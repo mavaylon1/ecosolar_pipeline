@@ -7,5 +7,5 @@ venv/
 *.egg-info/
 dist/
 .pytest_cache/
-output/
+output/*.pdf
 *.log

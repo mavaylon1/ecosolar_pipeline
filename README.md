@@ -79,12 +79,11 @@ Output files are saved to `output/` (gitignored):
 # Direct webhook POST — tests everything except the JNB automation trigger
 pytest tests/test_e2e.py
 
-# Full trigger chain — changes job status to fire the JNB automation rule
+# Full trigger chain — creates a job so JNB fires the webhook automatically on creation
 pytest tests/test_e2e.py --full-trigger
 ```
 
-Set `TRIGGER_STATUS_NAME` env var to match the JNB workflow trigger status (default: `"Ready for Permit"`).
-
+> Requires the JNB automation rule to be configured: **Trigger = Job Created → Action = Webhook → your URL**.
 > Tier 3 creates real JNB records and archives them on cleanup. Run sparingly — on initial setup, after infrastructure changes, or before deploying to production.
 
 ---

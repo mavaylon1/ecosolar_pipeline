@@ -17,8 +17,9 @@ app = Flask(__name__)
 @app.route("/webhook", methods=["POST"])
 def webhook():
     body = request.get_json(force=True) or {}
-    # JNB may send the full record or just metadata — extract jnid from either shape
-    jnid = body.get("jnid") or body.get("id") or (body.get("data") or {}).get("jnid")
+    # JNB webhook payload uses field names with spaces and sends primary_id as a plain string.
+    # Key field is always "jnid". Fall back to "id" for manually posted payloads.
+    jnid = body.get("jnid") or body.get("id")
     if not jnid:
         return jsonify({"error": "could not find jnid in payload"}), 400
     try:

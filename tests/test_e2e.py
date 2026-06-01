@@ -51,10 +51,6 @@ _TEST_CONTACT_PAYLOAD = {
 }
 
 
-def pytest_addoption(parser):
-    parser.addoption("--full-trigger", action="store_true", default=False)
-
-
 @pytest.fixture
 def full_trigger(request):
     return request.config.getoption("--full-trigger")
@@ -74,11 +70,11 @@ def test_job():
 
     # Cleanup runs even if test fails
     try:
-        jnb_client.delete_job(job_jnid)
+        jnb_client.archive_job(job_jnid)
     except Exception:
         pass
     try:
-        jnb_client.delete_contact(contact_jnid)
+        jnb_client.archive_contact(contact_jnid)
     except Exception:
         pass
 

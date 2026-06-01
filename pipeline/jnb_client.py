@@ -41,8 +41,8 @@ def create_job(payload: dict) -> dict:
     return r.json()
 
 
-def delete_job(jnid: str) -> None:
-    r = requests.delete(f"{_BASE}/jobs/{jnid}", headers=_headers(), timeout=15)
+def archive_job(jnid: str) -> None:
+    r = requests.put(f"{_BASE}/jobs/{jnid}", headers=_headers(), json={"is_archived": True}, timeout=15)
     r.raise_for_status()
 
 
@@ -52,8 +52,8 @@ def create_contact(payload: dict) -> dict:
     return r.json()
 
 
-def delete_contact(jnid: str) -> None:
-    r = requests.delete(f"{_BASE}/contacts/{jnid}", headers=_headers(), timeout=15)
+def archive_contact(jnid: str) -> None:
+    r = requests.put(f"{_BASE}/contacts/{jnid}", headers=_headers(), json={"is_archived": True}, timeout=15)
     r.raise_for_status()
 
 

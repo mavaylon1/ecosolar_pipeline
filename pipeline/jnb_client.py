@@ -35,8 +35,9 @@ def attach_file(job_jnid: str, filename: str, data: bytes, content_type: str = "
     return r.json()
 
 
-def create_job(payload: dict) -> dict:
-    r = requests.post(f"{_BASE}/jobs", headers=_headers(), json=payload, timeout=15)
+def create_job(payload: dict, skip_automation: bool = False) -> dict:
+    params = {"skip": "automation,notification"} if skip_automation else {}
+    r = requests.post(f"{_BASE}/jobs", headers=_headers(), json=payload, params=params, timeout=15)
     r.raise_for_status()
     return r.json()
 
@@ -46,8 +47,9 @@ def archive_job(jnid: str) -> None:
     r.raise_for_status()
 
 
-def create_contact(payload: dict) -> dict:
-    r = requests.post(f"{_BASE}/contacts", headers=_headers(), json=payload, timeout=15)
+def create_contact(payload: dict, skip_automation: bool = False) -> dict:
+    params = {"skip": "automation,notification"} if skip_automation else {}
+    r = requests.post(f"{_BASE}/contacts", headers=_headers(), json=payload, params=params, timeout=15)
     r.raise_for_status()
     return r.json()
 

@@ -63,8 +63,9 @@ def full_trigger(request):
 
 @pytest.fixture
 def test_job():
-    """Creates a test contact + job, yields the job record, archives both on cleanup."""
-    contact = jnb_client.create_contact(_TEST_CONTACT_PAYLOAD)
+    """Creates a test contact + job with skip_automation=True so the JNB webhook
+    does not fire on creation — the test controls the trigger manually via direct POST."""
+    contact = jnb_client.create_contact(_TEST_CONTACT_PAYLOAD, skip_automation=True)
     contact_jnid = contact["jnid"]
 
     job_payload = {
@@ -72,7 +73,7 @@ def test_job():
         "primary": {"id": contact_jnid, "type": "contact"},
         "related": [{"id": contact_jnid, "type": "contact"}],
     }
-    job = jnb_client.create_job(job_payload)
+    job = jnb_client.create_job(job_payload, skip_automation=True)
     job_jnid = job["jnid"]
 
     yield job

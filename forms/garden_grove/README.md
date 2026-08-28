@@ -16,14 +16,14 @@
 | Job Address | `address_line1`, `city`, `state_text`, `zip` | Joined with commas |
 | Residential (checkbox) | `Property Type` | See controlled values below |
 | Commercial (checkbox) | `Property Type` | See controlled values below |
-| Job Description 1/2/3 | `job_description` | Engineer-entered. Long text wraps across 3 lines. |
+| Job Description 1/2/3 | `Job_description` | Engineer-entered. Long text wraps across 3 lines. |
 | Panel Count (`undefined_4`) | `Number Panels` | |
-| System kW (`undefined_5`) | `system_kw_ac` → fallback `System size DC` | AC preferred. Falls back to DC if AC not present. |
-| Existing Solar (radio) | `existing_panels` | Engineer-entered. See controlled values below. |
-| Main Structure (checkbox) | `structure` | Engineer-entered. Parsed from comma-separated value. |
-| Garage (checkbox) | `structure` | Engineer-entered. |
-| Patio (checkbox) | `structure` | Engineer-entered. |
-| Accessory Structure (checkbox) | `structure` | Engineer-entered. |
+| System kW (`undefined_5`) | `System_kw_ac` → fallback `System size DC` | AC preferred. Falls back to DC if AC not present. |
+| Existing Solar (radio) | `Existing_panels` | Engineer-entered. See controlled values below. |
+| Main Structure (checkbox) | `Structure` | Engineer-entered. Parsed from comma-separated value. |
+| Garage (checkbox) | `Structure` | Engineer-entered. |
+| Patio (checkbox) | `Structure` | Engineer-entered. |
+| Accessory Structure (checkbox) | `Structure` | Engineer-entered. |
 | Valuation | Calculated | See calculation below. |
 
 ### From JNB Contact Record
@@ -97,9 +97,9 @@ Defined in `transformer._COMMERCIAL_TYPES`. Add new commercial types there if ne
 
 ### Structure Checkboxes
 
-`structure` is a comma-separated string entered by the engineer. Each token maps to a checkbox:
+`Structure` is a comma-separated string entered by the engineer. Each token maps to a checkbox:
 
-| Value in `structure` field | PDF Checkbox |
+| Value in `Structure` field | PDF Checkbox |
 |---|---|
 | `Main` or `Main Structure` | Main Structure |
 | `Garage` | Garage |
@@ -110,21 +110,23 @@ Defined in `transformer._COMMERCIAL_TYPES`. Add new commercial types there if ne
 
 ### Existing Solar Panels
 
-`existing_panels` is a yes/no field entered by the engineer. Maps to the radio button:  
+`Existing_panels` is a yes/no field entered by the engineer. Maps to the radio button:  
 `"Yes"` → Yes selected, `"No"` (or missing) → No selected.
+
+**Known limitation:** whether panels are already installed is a manual judgment call by the engineer — it isn't derived from any other JNB field, so there's no automated cross-check today. This is a candidate for future agent-assisted verification (see ROADMAP Phase 4).
 
 ---
 
 ## Engineer-Entered Fields
 
-These 4 fields were added to JNB on 2026-05-29 and must be filled by the engineer before the pipeline runs:
+These 4 custom fields were added to JNB on 2026-05-29 and must be filled by the engineer before the job reaches Permit status (which is when the pipeline runs — see automation trigger in the top-level README). API key names were confirmed live against a real job on 2026-07-12; note the capitalized first word, which doesn't match typical snake_case JNB field naming and was previously a silent bug (`transformer.py` read the lowercase versions and got nothing back):
 
 | JNB Field | Type | Description |
 |---|---|---|
-| `job_description` | Text | Description of work, written per Alyssa's format from the plan sheet |
-| `structure` | Comma-separated | Structures in scope: `Main`, `Garage`, `Patio`, `Accessory Structure` |
-| `existing_panels` | Yes/No | Whether solar panels are already installed on the roof |
-| `system_kw_ac` | Number | AC system kW from the plan set |
+| `Job_description` | Text | Description of work, written per Alyssa's format from the plan sheet |
+| `Structure` | Comma-separated | Structures in scope: `Main`, `Garage`, `Patio`, `Accessory Structure` |
+| `Existing_panels` | Yes/No | Whether solar panels are already installed on the roof. Manual judgment call, not cross-checked against other data — see limitation note above. |
+| `System_kw_ac` | Number | AC system kW from the plan set |
 
 ---
 

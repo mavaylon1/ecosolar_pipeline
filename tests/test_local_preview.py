@@ -28,7 +28,16 @@ def jnid(request):
     val = request.config.getoption("--jnid") or os.environ.get("PREVIEW_JNID")
     if not val:
         pytest.skip("Pass --jnid <jnid> to run this test")
-    return val
+
+    yield val
+
+    # Preview artifacts are for inspecting THIS run's output, not a persistent archive —
+    # remove them after the test so output/ doesn't accumulate stale files across jnids.
+    out_dir = Path(__file__).parent.parent / "output"
+    for name in (f"field_log_{val}.txt", f"permit_data_{val}.json", f"preview_{val}.pdf"):
+        path = out_dir / name
+        if path.exists():
+            path.unlink()
 
 
 def test_transformer_output(jnid):

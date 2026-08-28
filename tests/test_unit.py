@@ -15,23 +15,23 @@ from pipeline.transformer import (
 # ── Valuation ──────────────────────────────────────────────────────────────
 
 def test_valuation_ac_kw_no_batteries():
-    job = {"system_kw_ac": "7.2", "Number of Battery": 0}
+    job = {"System_kw_ac": "7.2", "Number of Battery": 0}
     assert _calc_valuation(job) == "14000"  # round(7.2)=7, 7×2000
 
 def test_valuation_rounds_up():
-    job = {"system_kw_ac": "7.6", "Number of Battery": 0}
+    job = {"System_kw_ac": "7.6", "Number of Battery": 0}
     assert _calc_valuation(job) == "16000"  # round(7.6)=8, 8×2000
 
 def test_valuation_rounds_down():
-    job = {"system_kw_ac": "7.2", "Number of Battery": 0}
+    job = {"System_kw_ac": "7.2", "Number of Battery": 0}
     assert _calc_valuation(job) == "14000"  # round(7.2)=7
 
 def test_valuation_with_batteries():
-    job = {"system_kw_ac": "7.2", "Number of Battery": 1}
+    job = {"System_kw_ac": "7.2", "Number of Battery": 1}
     assert _calc_valuation(job) == "16500"  # 7×2000 + 1×2500
 
 def test_valuation_multiple_batteries():
-    job = {"system_kw_ac": "7.2", "Number of Battery": 2}
+    job = {"System_kw_ac": "7.2", "Number of Battery": 2}
     assert _calc_valuation(job) == "19000"  # 7×2000 + 2×2500
 
 def test_valuation_falls_back_to_dc():
@@ -39,14 +39,14 @@ def test_valuation_falls_back_to_dc():
     assert _calc_valuation(job) == "6000"  # round(2.64)=3, 3×2000
 
 def test_valuation_ac_preferred_over_dc():
-    job = {"system_kw_ac": "7.2", "System size DC": 2.64, "Number of Battery": 0}
+    job = {"System_kw_ac": "7.2", "System size DC": 2.64, "Number of Battery": 0}
     assert _calc_valuation(job) == "14000"  # uses AC not DC
 
 def test_valuation_missing_kw():
     assert _calc_valuation({}) == ""
 
 def test_valuation_no_battery_key():
-    job = {"system_kw_ac": "7.2"}
+    job = {"System_kw_ac": "7.2"}
     assert _calc_valuation(job) == "14000"  # missing battery treated as 0
 
 
@@ -124,10 +124,10 @@ _MOCK_JOB = {
     "Property Type": "Single Family",
     "Number Panels": 20,
     "Number of Battery": 1,
-    "system_kw_ac": "7.2",
-    "job_description": "Install solar PV system.",
-    "structure": "Main",
-    "existing_panels": "No",
+    "System_kw_ac": "7.2",
+    "Job_description": "Install solar PV system.",
+    "Structure": "Main",
+    "Existing_panels": "No",
 }
 
 _MOCK_CONTACT = {

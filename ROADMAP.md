@@ -10,10 +10,10 @@ Single-city PDF pipeline fully operational:
 - Three-tier test suite with daily CI on Tiers 1 and 2
 
 **Remaining to close out Phase 1:**
-- Confirm exact JNB API key names for the 4 engineer-entered custom fields (`job_description`, `structure`, `existing_panels`, `system_kw_ac`)
-- Mark those 4 fields as required in JNB so they are always populated at job creation
+- ~~Confirm exact JNB API key names for the 4 engineer-entered custom fields~~ — confirmed live 2026-07-12: `Job_description`, `Structure`, `Existing_panels`, `System_kw_ac`
+- Mark those 4 fields as required in JNB so they are populated before a job reaches Permit status
 - Run full Tier 3 end-to-end test
-- Set up JNB automation rule: Trigger = Job Created → Action = Webhook
+- Set up JNB automation rule: Trigger = Status Changed → Permit → Action = Webhook
 
 ---
 
@@ -24,7 +24,7 @@ Move from ngrok + local machine to an always-on hosted service.
 **Infrastructure:**
 - Deploy to Railway (~$5/month). Server code requires no changes — only the webhook URL changes in JNB.
 - Set `JOBNIMBUS_API_KEY` as a Railway environment variable
-- Update the JNB automation rule (Job Created → Webhook) to point at the Railway URL instead of ngrok
+- Update the JNB automation rule (Status Changed → Permit → Webhook) to point at the Railway URL instead of ngrok
 
 **Hardening:**
 - Add webhook signature verification if JNB supports it (prevents unauthorized triggers)

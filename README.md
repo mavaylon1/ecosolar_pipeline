@@ -79,11 +79,11 @@ Output files are saved to `output/` (gitignored):
 # Direct webhook POST — tests everything except the JNB automation trigger
 pytest tests/test_e2e.py
 
-# Full trigger chain — creates a job so JNB fires the webhook automatically on creation
+# Full trigger chain — creates a job, then changes its status to Permit so JNB fires the webhook automatically
 pytest tests/test_e2e.py --full-trigger
 ```
 
-> Requires the JNB automation rule to be configured: **Trigger = Job Created → Action = Webhook → your URL**.
+> Requires the JNB automation rule to be configured: **Trigger = Job Status Changed → New Status = Permit → Action = Webhook → your URL**.
 > Tier 3 creates real JNB records and archives them on cleanup. Run sparingly — on initial setup, after infrastructure changes, or before deploying to production.
 
 ---
@@ -128,6 +128,18 @@ tests/
 conftest.py                  Shared pytest CLI options
 .github/workflows/daily.yml  Tiers 1 & 2 run daily at 9am PT via GitHub Actions
 output/                      Local test artifacts (gitignored)
+```
+
+**Only `server.py`, `pipeline/`, and `forms/` are live** — what actually runs in production. Everything
+below is exploratory groundwork for future cities, not wired into the running pipeline:
+
+```
+forms_in_progress/           Draft city forms being tested against real JNB data before
+                              promotion to forms/ — see forms_in_progress/README.md
+pending_forms/                Raw source PDFs per city, not yet built into forms_in_progress
+pending_forms_fillable/       Flat (non-fillable) source PDFs hand-converted to AcroForms —
+                              see pending_forms_fillable/STATUS.md
+TODO.md                      Known issues not yet fixed (e.g. text-overflow in forms/fill.py)
 ```
 
 ---

@@ -55,15 +55,70 @@ def _split_phone(value):
     return "", str(value or "")
 
 
-def _wrap_to_fields(value, count, width):
+def _get_font(font_name):
+    try:
+        return fitz.Font(fontname=(font_name or "helv").lower())
+    except Exception:
+        return fitz.Font(fontname="helv")
+
+
+def _text_width(text, fontsize, font):
+    return font.text_length(text, fontsize=fontsize)
+
+
+def best_fit_fontsize(text, box_width, font, max_size=11, min_size=6, padding=4):
+    """Largest font size (in half-point steps) at which `text` fits within box_width. Falls
+    back to min_size (still may overflow) if even the smallest readable size doesn't fit."""
+    if not text:
+        return max_size
+    usable = max(box_width - padding, 1)
+    size = max_size
+    while size > min_size and _text_width(text, size, font) > usable:
+        size -= 0.5
+    return size
+
+
+def _wrap_by_width(text, box_width, fontsize, font, padding=4):
+    """Greedy word-wrap using real font metrics instead of a guessed character count."""
+    usable = max(box_width - padding, 1)
+    words = text.split()
+    lines, current = [], ""
+    for word in words:
+        candidate = f"{current} {word}".strip()
+        if _text_width(candidate, fontsize, font) <= usable or not current:
+            current = candidate
+        else:
+            lines.append(current)
+            current = word
+    if current:
+        lines.append(current)
+    return lines or [""]
+
+
+def _wrap_to_fields(value, names, widget_lookup, wrap_fontsize=9):
+    """Wraps `value` across `names` PDF fields using each field's real box width/font.
+    Returns (parts_per_name, overflow_text_or_None) - overflow is any text that didn't
+    fit even after using every available field, so callers can report it as a lost-data issue."""
     text = _normalize(value)
-    lines = textwrap.wrap(text, width=width, break_long_words=False, replace_whitespace=False) or [text]
-    lines = lines[:count]
-    return lines + [""] * (count - len(lines))
+    count = len(names)
+
+    widgets = [widget_lookup.get(n) for n in names]
+    known_widths = [w.rect.width for w in widgets if w is not None]
+    box_width = min(known_widths) if known_widths else 150
+    font = _get_font(widgets[0].text_font if widgets and widgets[0] is not None else None)
+
+    lines = _wrap_by_width(text, box_width, wrap_fontsize, font)
+    overflow = None
+    if len(lines) > count:
+        lines, overflow_lines = lines[:count], lines[count:]
+        overflow = " ".join(overflow_lines)
+    parts = lines + [""] * (count - len(lines))
+    return parts, overflow
 
 
-def _build_updates(data, mapping, available):
+def _build_updates(data, mapping, available, widget_lookup=None):
     updates, issues = {}, []
+    widget_lookup = widget_lookup or {}
 
     for schema_key, spec in mapping.get("fields", {}).items():
         if isinstance(spec, str):
@@ -95,12 +150,17 @@ def _build_updates(data, mapping, available):
 
         if "pdf_field_names" in spec:
             names = spec["pdf_field_names"]
-            parts = _wrap_to_fields(value, len(names), int(spec.get("wrap_width", 90)))
+            parts, overflow = _wrap_to_fields(value, names, widget_lookup)
+            if overflow:
+                issues.append(FillIssue(
+                    "warning", schema_key,
+                    f"Text too long for the {len(names)} available field(s) - dropped: {overflow!r}",
+                ))
             for name, part in zip(names, parts):
                 if name not in available:
                     issues.append(FillIssue("error", schema_key, f"PDF field not found: {name}"))
                     continue
-                updates[name] = {"value": part, "type": "text", "schema_key": schema_key}
+                updates[name] = {"value": part, "type": "text", "schema_key": schema_key, "fontsize": 9}
             continue
 
         name = spec.get("pdf_field_name")
@@ -112,6 +172,8 @@ def _build_updates(data, mapping, available):
             continue
 
         updates[name] = {"value": value, "type": spec.get("type", "auto"), "schema_key": schema_key}
+        if "fontsize" in spec:
+            updates[name]["fontsize"] = spec["fontsize"]
 
     return updates, issues
 
@@ -129,6 +191,7 @@ def _set_checkbox(widget, value):
 
 def _apply(doc, updates):
     filled = []
+    overflow_issues = []
     for page in doc:
         for widget in page.widgets() or []:
             if widget.field_name not in updates:
@@ -154,11 +217,23 @@ def _apply(doc, updates):
                 filled.append(widget.field_name)
                 continue
 
-            widget.field_value = _normalize(value)
+            text = _normalize(value)
+            font = _get_font(widget.text_font)
+            fontsize = upd.get("fontsize")
+            if fontsize is None:
+                fontsize = best_fit_fontsize(text, widget.rect.width, font)
+            if text and _text_width(text, fontsize, font) > max(widget.rect.width - 4, 1):
+                overflow_issues.append(FillIssue(
+                    "warning", upd.get("schema_key", widget.field_name),
+                    f"Value likely overflows field {widget.field_name!r} even at {fontsize}pt: {text!r}",
+                ))
+
+            widget.text_fontsize = fontsize
+            widget.field_value = text
             widget.update()
             filled.append(widget.field_name)
 
-    return sorted(set(filled))
+    return sorted(set(filled)), overflow_issues
 
 
 def fill_pdf_form(pdf_path, data_path, mapping_path, output_path, flatten=False):
@@ -166,13 +241,15 @@ def fill_pdf_form(pdf_path, data_path, mapping_path, output_path, flatten=False)
     mapping = _load(mapping_path)
 
     doc = fitz.open(pdf_path)
-    available = {w.field_name for page in doc for w in (page.widgets() or [])}
+    widget_lookup = {w.field_name: w for page in doc for w in (page.widgets() or [])}
+    available = set(widget_lookup.keys())
 
     if not available:
         raise RuntimeError("No fillable fields found in PDF.")
 
-    updates, issues = _build_updates(data, mapping, available)
-    filled = _apply(doc, updates)
+    updates, issues = _build_updates(data, mapping, available, widget_lookup)
+    filled, overflow_issues = _apply(doc, updates)
+    issues.extend(overflow_issues)
 
     if flatten:
         for page in doc:

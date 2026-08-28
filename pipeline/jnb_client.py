@@ -42,6 +42,13 @@ def create_job(payload: dict, skip_automation: bool = False) -> dict:
     return r.json()
 
 
+def update_job(jnid: str, payload: dict, skip_automation: bool = False) -> dict:
+    params = {"skip": "automation,notification"} if skip_automation else {}
+    r = requests.put(f"{_BASE}/jobs/{jnid}", headers=_headers(), json=payload, params=params, timeout=15)
+    r.raise_for_status()
+    return r.json()
+
+
 def archive_job(jnid: str) -> None:
     r = requests.put(f"{_BASE}/jobs/{jnid}", headers=_headers(), json={"is_archived": True}, timeout=15)
     r.raise_for_status()

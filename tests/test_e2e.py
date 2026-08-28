@@ -3,12 +3,16 @@ End-to-end pipeline test.
 
 Two modes:
   pytest tests/test_e2e.py                    # posts directly to webhook (fast)
-  pytest tests/test_e2e.py --full-trigger     # creates a job so JNB fires webhook on creation (full chain)
+  pytest tests/test_e2e.py --full-trigger     # changes job status to Permit so JNB fires the webhook (full chain)
 
 Requires env vars: JOBNIMBUS_API_KEY, WEBHOOK_URL
 Cleans up (archives) test records even if the test fails.
 
-Trigger: JNB automation rule → Job Created → Webhook
+Trigger: JNB automation rule → Status Changed → Permit → Webhook
+
+Note: the pipeline re-runs (and re-attaches a PDF) every time a job's status changes
+to Permit — there's no dedupe guard by design, since that lets this test run repeatedly
+without needing fresh fake job/contact records each time.
 """
 
 import os
@@ -36,11 +40,11 @@ _TEST_JOB_PAYLOAD = {
     "Number Panels": 20,
     "Number of Battery": 0,
     "System size DC": 7.2,
-    # 4 engineer-entered custom fields — confirmed API key names required here
-    "job_description": "Install roof-mounted solar PV system with 20 modules and associated electrical equipment.",
-    "structure": "Main",
-    "existing_panels": "No",
-    "system_kw_ac": "7.2",
+    # 4 engineer-entered custom fields — confirmed API key names (verified 2026-07-12)
+    "Job_description": "Install roof-mounted solar PV system with 20 modules and associated electrical equipment.",
+    "Structure": "Main",
+    "Existing_panels": "No",
+    "System_kw_ac": "7.2",
 }
 
 _TEST_CONTACT_PAYLOAD = {
@@ -116,19 +120,20 @@ def test_pipeline_via_direct_post(test_job):
     assert files, "No PDF attachment found on job after pipeline ran"
 
 
-def test_pipeline_via_job_creation(full_trigger):
+def test_pipeline_via_status_trigger(full_trigger):
     """
-    Creates a new job so JNB fires the webhook automatically on creation.
-    Tests the full trigger chain: JNB automation → webhook → pipeline → PDF attached.
+    Creates a job (automation suppressed), then changes its status to "Permit"
+    so JNB fires the webhook automatically. Tests the full trigger chain:
+    JNB automation → webhook → pipeline → PDF attached.
 
     Requires the JNB automation rule to be configured:
-      Trigger: Job → Created
+      Trigger: Job → Status Changed → Permit
       Action: Webhook → WEBHOOK_URL
     """
     if not full_trigger:
         pytest.skip("Pass --full-trigger to run the full JNB automation trigger test")
 
-    contact = jnb_client.create_contact(_TEST_CONTACT_PAYLOAD)
+    contact = jnb_client.create_contact(_TEST_CONTACT_PAYLOAD, skip_automation=True)
     contact_jnid = contact["jnid"]
     job_jnid = None
 
@@ -138,10 +143,12 @@ def test_pipeline_via_job_creation(full_trigger):
             "primary": {"id": contact_jnid, "type": "contact"},
             "related": [{"id": contact_jnid, "type": "contact"}],
         }
-        job = jnb_client.create_job(job_payload)
+        job = jnb_client.create_job(job_payload, skip_automation=True)
         job_jnid = job["jnid"]
 
-        # Job creation fires the JNB automation → webhook → pipeline runs
+        # Status change (automation NOT suppressed here) fires the JNB automation → webhook → pipeline runs
+        jnb_client.update_job(job_jnid, {"status_name": "Permit"})
+
         files = _poll_for_attachment(job_jnid, timeout=90)
         assert files, "No PDF attachment found — JNB automation may not be configured or pipeline failed"
 

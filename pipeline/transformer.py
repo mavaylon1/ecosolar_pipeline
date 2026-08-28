@@ -3,12 +3,11 @@ Maps a JobNimbus job record + linked contact into the permit data schema
 expected by forms/fill.py.
 
 NOTE: The 4 engineer-entered custom fields were added to JNB on 2026-05-29.
-Their exact API key names are confirmed below but should be verified against
-a real job once an engineer has populated them.
-  - job_description   → project.job_description
-  - structure         → reroof.structures  (comma-separated: "Main,Garage,...")
-  - existing_panels   → solar.existing_solar_on_roof  ("Yes" / "No")
-  - system_kw_ac      → solar.solar_kw_ac
+Confirmed API key names (verified 2026-07-12):
+  - Job_description   → project.job_description
+  - Structure         → reroof.structures  (comma-separated: "Main,Garage,...")
+  - Existing_panels   → solar.existing_solar_on_roof  ("Yes" / "No")
+  - System_kw_ac      → solar.solar_kw_ac
 """
 
 import math
@@ -62,7 +61,7 @@ def _job_address(job: dict) -> str:
 
 
 def _calc_valuation(job: dict) -> str:
-    kw_raw = job.get("system_kw_ac") or job.get("System size DC")
+    kw_raw = job.get("System_kw_ac") or job.get("System size DC")
     if not kw_raw:
         return ""
     batteries = int(job.get("Number of Battery") or 0)
@@ -152,30 +151,30 @@ def build_field_log(job: dict, contact: dict) -> list[dict]:
     row("Valuation",
         "calculated: round(kW)×$2000 + batteries×$2500",
         _calc_valuation(job),
-        note=f"kW={job.get('system_kw_ac') or job.get('System size DC') or '?'}, batteries={batteries}")
+        note=f"kW={job.get('System_kw_ac') or job.get('System size DC') or '?'}, batteries={batteries}")
 
     # Job description (engineer-entered)
-    row("Job Description 1/2/3", "job: job_description", job.get("job_description"))
+    row("Job Description 1/2/3", "job: Job_description", job.get("Job_description"))
 
     # Panel count
     row("Panel Count (undefined_4)", "job: Number Panels", job.get("Number Panels"))
 
     # kW — AC preferred, DC fallback
-    kw_ac = job.get("system_kw_ac")
+    kw_ac = job.get("System_kw_ac")
     kw_dc = job.get("System size DC")
     if kw_ac:
-        row("System kW (undefined_5)", "job: system_kw_ac", kw_ac)
+        row("System kW (undefined_5)", "job: System_kw_ac", kw_ac)
     elif kw_dc:
-        row("System kW (undefined_5)", "job: System size DC", kw_dc, note="fallback — system_kw_ac missing")
+        row("System kW (undefined_5)", "job: System size DC", kw_dc, note="fallback — System_kw_ac missing")
     else:
-        row("System kW (undefined_5)", "job: system_kw_ac / System size DC", None)
+        row("System kW (undefined_5)", "job: System_kw_ac / System size DC", None)
 
     # Existing panels (engineer-entered)
-    row("Existing Solar (radio)", "job: existing_panels", job.get("existing_panels"))
+    row("Existing Solar (radio)", "job: Existing_panels", job.get("Existing_panels"))
 
     # Structure checkboxes (engineer-entered)
     row("Structure checkboxes (Main/Garage/Patio/Accessory)",
-        "job: structure", job.get("structure"))
+        "job: Structure", job.get("Structure"))
 
     return entries
 
@@ -219,7 +218,7 @@ def build_permit_data(job: dict, contact: dict) -> dict:
             "project_id": job.get("jnid", ""),
             "jurisdiction": job.get("city", ""),
             "form_type": "solar_permit_application",
-            "job_description": job.get("job_description", ""),
+            "job_description": job.get("Job_description", ""),
             "valuation": _calc_valuation(job),
             "use_type": _use_type(job),
             "permit_types": {
@@ -245,14 +244,14 @@ def build_permit_data(job: dict, contact: dict) -> dict:
         "solar": {
             "solar_panel_count": job.get("Number Panels") or "",
             "solar_kw_ac": (
-                job.get("system_kw_ac")
+                job.get("System_kw_ac")
                 or job.get("System size DC")
                 or ""
             ),
-            "existing_solar_on_roof": job.get("existing_panels", "No"),
+            "existing_solar_on_roof": job.get("Existing_panels", "No"),
         },
         "reroof": {
-            "structures": _parse_structures(job.get("structure")),
+            "structures": _parse_structures(job.get("Structure")),
         },
         "signature": {
             "signature": "",

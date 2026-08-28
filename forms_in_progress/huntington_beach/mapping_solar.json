@@ -1,0 +1,17 @@
+{
+  "template_id": "huntington_beach_solar_pv_application",
+  "mode": "fillable_acroform",
+  "fields": {
+    "property.job_address": { "pdf_field_name": "Job Address Street Street Name Unit Zip Code", "required": true },
+    "owner.property_owner": { "pdf_field_name": "Property Owners Name", "required": true },
+    "owner.homeowner_address": { "pdf_field_name": "Owner Address Street Street Name Unit Zip Code" },
+    "owner.homeowner_phone": { "pdf_field_name": "Phone Number" },
+    "owner.homeowner_email": { "pdf_field_name": "Email" },
+    "contractor.contractor_license": { "pdf_field_name": "Contractors State License No" },
+    "solar_use.mfd": { "pdf_field_name": "Check Box3", "type": "checkbox" },
+    "solar_use.sfd": { "pdf_field_name": "Check Box4", "type": "checkbox" },
+    "solar.solar_panel_count": { "pdf_field_name": "Photovoltaic  Solar Residential 23797" },
+    "solar.battery_count": { "pdf_field_name": "Energy Storage System 5495" },
+    "business.structural_calc_required": { "pdf_field_name": "Check Box1", "type": "checkbox" }
+  }
+}

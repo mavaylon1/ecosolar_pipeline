@@ -1,0 +1,33 @@
+{
+  "template_id": "fullerton_solar_permit_application_worksheet",
+  "mode": "fillable_acroform",
+  "_note": "Tenant fields (not applicable - owner-occupied residential), Architect/Engineer fields (not applicable to a standard solar install), Tidemark/Master ID/Fire Class/Occ Group/Type of Constr/Flood Zone/fee fields (staff-assigned or fee-schedule, out of scope), and Submittal Date (filled at time of filing) are all intentionally unmapped. 'Contractor License Class' is a ~9pt-wide box - mathematically too narrow to fit any text at a legible size (confirmed 2026-08-28: even a single 3-character code doesn't fit at the smallest readable font) - left unmapped rather than force in invisible/clipped text; see pending_forms_fillable/STATUS.md. 'Contractor Phone' (27pt box) is nearly as bad - a full 10-digit number only fits at 3.5pt, effectively unreadable without zooming; forced anyway since a phone number can't be shortened the way the license class fields were, but flagged as the worst instance of Fullerton's narrow-field problem. 'Project Address' also runs a near-zero margin since it's a full dynamic address in a single-line box - same open issue as the Westminster/Huntington Beach address fields, not fixed here.",
+  "fields": {
+    "property.job_address": { "pdf_field_name": "Project Address", "required": true },
+    "property.unit": { "pdf_field_name": "Suite" },
+    "project.job_description": { "pdf_field_name": "Job Description", "required": true },
+    "solar.solar_panel_count": { "pdf_field_name": "Number Of Panels" },
+    "solar.solar_kw_ac": { "pdf_field_name": "System kWAC" },
+    "owner.property_owner": { "pdf_field_name": "Building Owner Name", "required": true },
+    "owner.homeowner_phone": { "pdf_field_name": "Owner Phone" },
+    "owner.homeowner_address": { "pdf_field_name": "Owner Address" },
+    "owner.homeowner_city": { "pdf_field_name": "Owner City" },
+    "owner.homeowner_state": { "pdf_field_name": "Owner State" },
+    "owner.homeowner_zip": { "pdf_field_name": "Owner Zip" },
+    "contractor.contractor_name": { "pdf_field_name": "Contractor Name" },
+    "contractor.contractor_license": { "pdf_field_name": "Contractor State Contr Number", "fontsize": 8 },
+    "contractor.contractor_phone": { "pdf_field_name": "Contractor Phone", "fontsize": 3.5 },
+    "contractor.contractor_address": { "pdf_field_name": "Contractor Address", "required": true },
+    "contractor.contractor_city": { "pdf_field_name": "Contractor City", "required": true },
+    "contractor.contractor_state": { "pdf_field_name": "Contractor State", "required": true },
+    "contractor.contractor_zip": { "pdf_field_name": "Contractor Zip", "required": true },
+    "workers_comp.policy_number": { "pdf_field_name": "Workers Comp Policy Number", "required": true },
+    "workers_comp.expiration_date": { "pdf_field_name": "Workers Comp Exp Date", "required": true },
+    "workers_comp.carrier": { "pdf_field_name": "Insurance Company", "required": true },
+    "city_license.number": { "pdf_field_name": "Fullerton Business License Number", "required": true },
+    "applicant.applicant_name": { "pdf_field_name": "Contact Name" },
+    "applicant.applicant_phone": { "pdf_field_name": "Contact Phone" },
+    "applicant.applicant_email": { "pdf_field_name": "Email Address" },
+    "project.valuation": { "pdf_field_name": "Valuation" }
+  }
+}

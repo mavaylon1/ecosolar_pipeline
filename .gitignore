@@ -12,4 +12,8 @@ output/*
 !output/.gitkeep
 forms_in_progress/output/*
 !forms_in_progress/output/.gitkeep
+# Real customer PII pulled live from JobNimbus (names/phones/emails/addresses) - regenerable
+# via build_data.py, never committed.
+forms_in_progress/permit_data.json
+forms_in_progress/*/permit_data.json
 *.log

@@ -1,0 +1,12 @@
+{
+  "template_id": "huntington_beach_asbestos_permit_disclosure",
+  "mode": "fillable_acroform",
+  "fields": {
+    "property.job_address": { "pdf_field_name": "Project Address", "required": true },
+    "project.job_description": { "pdf_field_name": "Scope of Work", "required": true },
+    "applicant.applicant_name": { "pdf_field_name": "Applicant Name" },
+    "applicant.applicant_phone": { "pdf_field_name": "Applicant Phone Number" },
+    "business.disclosure_role_contractor": { "pdf_field_name": "Check Box3", "type": "checkbox" },
+    "property.job_address_p2": { "pdf_field_name": "Text4" }
+  }
+}

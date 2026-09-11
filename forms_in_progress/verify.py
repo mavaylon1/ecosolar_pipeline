@@ -12,7 +12,7 @@ import fitz
 
 from forms.fill import _load, _build_updates, _normalize, _get_font, _text_width, best_fit_fontsize
 
-# Human-readable JobNimbus source per schema key (matches pending_forms/JNB_FIELD_MAPPING.md)
+# Human-readable JobNimbus source per schema key
 JNB_SOURCE = {
     "property.job_address": "job: address_line1, city, state_text, zip",
     "property.job_address_p2": "job: address_line1, city, state_text, zip (2nd copy on page 2)",
@@ -51,11 +51,11 @@ JNB_SOURCE = {
     "contractor.contractor_class_compact": "static (EcoSolar) - no-space join, for narrow license-class boxes",
     "contractor.contractor_license_class_no": "static (EcoSolar) - class + license combined",
     "contractor.business_tax": "static (EcoSolar) - NOT YET SET, needs real value",
-    "contractor.contractor_address": "static (EcoSolar) - NOT YET SET, needs real value",
-    "contractor.contractor_city": "static (EcoSolar) - NOT YET SET, needs real value",
-    "contractor.contractor_state": "static (EcoSolar) - NOT YET SET, needs real value",
-    "contractor.contractor_zip": "static (EcoSolar) - NOT YET SET, needs real value",
-    "contractor.contractor_email": "static (EcoSolar) - NOT YET SET, needs real value",
+    "contractor.contractor_address": "static (EcoSolar) - same building as applicant.applicant_address",
+    "contractor.contractor_city": "static (EcoSolar) - same as applicant.applicant_city",
+    "contractor.contractor_state": "static (EcoSolar) - same as applicant.applicant_state",
+    "contractor.contractor_zip": "static (EcoSolar) - same as applicant.applicant_zip",
+    "contractor.contractor_email": "static (EcoSolar) - same as applicant.applicant_email",
     "contractor.contractor_license_exp": "static (EcoSolar) - NOT YET SET, needs real value",
     "solar.solar_panel_count": "job: Number Panels",
     "solar.solar_kw_ac": "job: System_kw_ac -> System size DC",

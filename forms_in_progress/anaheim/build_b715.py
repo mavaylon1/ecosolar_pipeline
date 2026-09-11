@@ -1,8 +1,8 @@
 import pathlib
 import fitz
 
-SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/pending_forms/anaheim/B715-BUILDING PERMIT APPLICATION_202508282216519191.pdf"
-OUT_DIR = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/pending_forms_fillable/anaheim"
+SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/forms_in_progress/anaheim/B715-BUILDING PERMIT APPLICATION_202508282216519191.pdf"
+OUT_DIR = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/forms_in_progress/anaheim"
 
 # All rects hand-verified against exact label bboxes from page.search_for() - no auto-detection.
 FIELDS = [

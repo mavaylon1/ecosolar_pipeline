@@ -34,7 +34,17 @@ not a repeatable QA step.
   `mapping.json` to fit that fixed size and box width instead of an arbitrary character count.
 - Decide whether this lives only in `forms_in_progress`/experimental work first, or goes straight
   into production `forms/fill.py` since Garden Grove's live form could have the same issue and
-  nobody's checked.
+  nobody's checked (checked once, 2026-08-28 — production's own "Class" field had plenty of
+  margin, but that's one field on one form, not a general clearance).
+
+**Partial mitigation so far (2026-09-11), not the general fix above:** `forms/fill.py`'s
+`_build_updates` now supports an explicit per-field `fontsize` override (previously only
+multi-field wrap groups had this), and a manual margin-recomputation audit (see
+`GUARDRAILS.md` rule 5) was used to find and hand-fix specific known-bad fields — Garden
+Grove declaration's "License Class", Westminster's "License Type" and "License Class and No",
+Fullerton's "Contractor State Contr Number" and "Contractor Phone". This caught real instances
+but is still a one-off patch per field found, not the automated check described above — a new
+field with this problem would still slip through silently.
 
 ---
 

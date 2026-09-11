@@ -1,8 +1,8 @@
 import pathlib
 import fitz
 
-SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/pending_forms/anaheim/B701-PERMIT EXTENSION REQUEST FORM_202508282224398561.pdf"
-OUT_DIR = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/pending_forms_fillable/anaheim"
+SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/not_possible_forms/anaheim/B701-PERMIT EXTENSION REQUEST FORM_202508282224398561.pdf"
+OUT_DIR = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/not_possible_forms/anaheim"
 
 FIELDS = [
     ("Last Name", "text", (33, 161, 181, 179), False),

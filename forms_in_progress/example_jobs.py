@@ -75,12 +75,16 @@ def extend_permit_data(job: dict, contact: dict, base: dict) -> dict:
     base["applicant"]["applicant_zip"] = "92843"
     base["applicant"]["applicant_name_trailing"] = base["applicant"]["applicant_name"]
 
-    # Not currently tracked anywhere - left blank on purpose so the fill report flags them as missing.
-    base["contractor"]["contractor_address"] = ""
-    base["contractor"]["contractor_city"] = ""
-    base["contractor"]["contractor_state"] = ""
-    base["contractor"]["contractor_zip"] = ""
-    base["contractor"]["contractor_email"] = ""
+    # Contractor's business email/address are the same as the applicant's (EcoSolar's own permit
+    # coordinator contact) - confirmed, not a guess. Street address is the same building, entered
+    # separately here (not derived from applicant_address) since that field is one combined
+    # string and these forms need street/city/state/zip split out.
+    base["contractor"]["contractor_address"] = "13902 Harbor Blvd, Unit 2A"
+    base["contractor"]["contractor_city"] = base["applicant"]["applicant_city"]
+    base["contractor"]["contractor_state"] = base["applicant"]["applicant_state"]
+    base["contractor"]["contractor_zip"] = base["applicant"]["applicant_zip"]
+    base["contractor"]["contractor_email"] = base["applicant"]["applicant_email"]
+    # Not currently tracked anywhere - left blank on purpose so the fill report flags it as missing.
     base["contractor"]["contractor_license_exp"] = ""
 
     base["workers_comp"] = {
@@ -103,7 +107,7 @@ def extend_permit_data(job: dict, contact: dict, base: dict) -> dict:
         "expiration": "",
     }
 
-    # Business-rule constants (not JNB-derived) - see JNB_FIELD_MAPPING.md cross-cutting #3
+    # Business-rule constants (not JNB-derived) - see GUARDRAILS.md
     base["business"] = {
         "owner_builder_licensed_contractor": True,
         "wc_maintain_insurance": True,

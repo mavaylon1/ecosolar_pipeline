@@ -7,9 +7,9 @@ One real JNB job per city feeds every form for that city (see `registry.py`), so
 | City | JNID | Job | Address | Custom fields populated? | Data file |
 |---|---|---|---|---|---|
 | Garden Grove (pinned) | `132f8a31349541118fa4fb380e9ac75c` | Emmanuel Cruz ADU | 13191 Benton Street, Garden Grove, CA, 92843 | Yes | `forms_in_progress/permit_data.json` |
-| Fountain Valley | `dc91d608b03c408ab0ba5b0afa603240` | Hien Mai ADU | 16415 Rosewood Street, Fountain Valley, CA, 92708 | No — missing Job_description, Structure, Existing_panels, System_kw_ac | `forms_in_progress/fountain_valley/permit_data.json` |
-| Huntington Beach | `c32dd1c3ae274f3087aa3b1fee14772b` | Michael Long*HDM/GO GREEN | 4071 FIGARO CIR, Huntington Beach, CA, 92649 | No — missing Job_description, Structure, Existing_panels, System_kw_ac | `forms_in_progress/huntington_beach/permit_data.json` |
-| Westminster | `a238b29888cf4d0590d8dc3cc6ba3074` | HOANG VU*DV*ADU- NO MONITOR | 13713 Chestnut Street, Westminster, CA, 92683 | No — missing Structure | `forms_in_progress/westminster/permit_data.json` |
+| Fountain Valley | `ec69bf562baa488e811632b35bc9ef2e` | Joanna Du *HDM/GOGREEN | 16813 WILLOW CIR, Fountain Valley, CA, 92708 | No — missing Job_description, Structure, Existing_panels, System_kw_ac | `forms_in_progress/fountain_valley/permit_data.json` |
+| Huntington Beach | `9cdaea1dc06343e18da855b5b7baf8fa` | Quang Vo* ADU Paisley | 20525 Paisley Lane, Huntington Beach, CA, 92646 | No — missing Job_description, Structure, Existing_panels, System_kw_ac | `forms_in_progress/huntington_beach/permit_data.json` |
+| Westminster | `00240a686a4e4d928d56cc59cab475ef` | Tu Linh La* ADU | 6054 Pamela Lane, Westminster, CA, 92683 | No — missing Job_description, Structure, Existing_panels, System_kw_ac | `forms_in_progress/westminster/permit_data.json` |
 | Anaheim | `02f14ddbd1b04374b01695930d61c849` | Khoa Tran NO MONITOR | 700 S Kenmore St, Unit B, Anaheim, CA, 92804 | Yes | `forms_in_progress/anaheim/permit_data.json` |
 | Fullerton | `671e7dfa075c4afb85b4f74732c1a116` | Vy Thanh Thuy Tran*DV*ADU- NO MONITOR | 2616 Balfour Avenue, Fullerton, CA, 92831 | No — missing Job_description, Structure, Existing_panels, System_kw_ac | `forms_in_progress/fullerton/permit_data.json` |
-| Los Angeles County | — | — | — | No jobs found for this city in JobNimbus. | — |
+| Los Angeles County | `mehp24nvrwjgv8kn7b0o0ik` | Hoang Ton - Remove Reinstall | 17559 Mondino Dr, Rowland Heights, CA, 91748 | No — missing Job_description, Structure, Existing_panels, System_kw_ac | `forms_in_progress/la_county/permit_data.json` |

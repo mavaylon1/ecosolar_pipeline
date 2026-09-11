@@ -1,8 +1,8 @@
 import pathlib
 import fitz
 
-SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/pending_forms/la_county/LACountyBSDPermitDeclaration.pdf"
-OUT_DIR = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/pending_forms_fillable/la_county"
+SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/forms_in_progress/la_county/LACountyBSDPermitDeclaration.pdf"
+OUT_DIR = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/forms_in_progress/la_county"
 
 def _r(x0, y0, x1, y1):
     return (x0, y0, x1, y1)

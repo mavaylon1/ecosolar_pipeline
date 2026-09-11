@@ -8,7 +8,7 @@ used elsewhere on this form. Owner's box keeps the original "Address" name.
 """
 import fitz
 
-SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/pending_forms/westminster/Building Permit Application.pdf"
+SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/forms_in_progress/westminster/Building Permit Application.pdf"
 OUT = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/forms_in_progress/westminster/Building Permit Application_fixed.pdf"
 
 # (y0 to identify which widget, new field name)

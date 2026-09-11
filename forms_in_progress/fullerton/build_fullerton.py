@@ -1,8 +1,8 @@
 import pathlib
 import fitz
 
-SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/pending_forms/fullerton/SolarPermitApplication98.pdf"
-OUT_DIR = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/pending_forms_fillable/fullerton"
+SRC = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/forms_in_progress/fullerton/SolarPermitApplication98.pdf"
+OUT_DIR = "/Users/matchu/Research/ecosolar/ecosolar_pipeline/forms_in_progress/fullerton"
 
 FIELDS = [
     ("Project Address", (119, 84.3, 333, 98.3), False),

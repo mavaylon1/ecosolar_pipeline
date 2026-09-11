@@ -134,12 +134,17 @@ output/                      Local test artifacts (gitignored)
 below is exploratory groundwork for future cities, not wired into the running pipeline:
 
 ```
-forms_in_progress/           Draft city forms being tested against real JNB data before
-                              promotion to forms/ — see forms_in_progress/README.md
-pending_forms/                Raw source PDFs per city, not yet built into forms_in_progress
-pending_forms_fillable/       Flat (non-fillable) source PDFs hand-converted to AcroForms —
-                              see pending_forms_fillable/STATUS.md
+forms_in_progress/           Draft city forms with a mapping written, being tested or tested
+                              against real JNB data, before promotion to forms/ — see
+                              forms_in_progress/README.md
+pending_forms_fillable/       Fillable PDFs (native or hand-converted) with no mapping
+                              written yet — see pending_forms_fillable/STATUS.md
+pending_forms/                Not fillable yet, but possible — conversion not started
+not_possible_forms/           Structurally blocked (data doesn't exist in JNB, or a scanned
+                              PDF with no text layer) — see not_possible_forms/README.md
 TODO.md                      Known issues not yet fixed (e.g. text-overflow in forms/fill.py)
+GUARDRAILS.md                 Conventions every city/form mapping must follow — read before
+                              writing or reviewing one
 ```
 
 ---

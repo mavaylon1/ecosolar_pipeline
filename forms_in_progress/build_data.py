@@ -34,7 +34,14 @@ def _pull_city(city_key: str, cfg: dict) -> dict:
         job = jnb_client.get_job(pinned_jnid)
         custom_fields_complete, missing_fields = True, []  # confirmed once when originally pinned
     else:
-        found = find_example_job(cfg["display_name"])
+        candidates = cfg.get("jnb_city", cfg["display_name"])
+        if isinstance(candidates, str):
+            candidates = [candidates]
+        found = None
+        for city in candidates:
+            found = find_example_job(city)
+            if found is not None:
+                break
         if found is None:
             return {
                 "city_key": city_key, "city_name": cfg["display_name"], "pinned": False,

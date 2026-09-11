@@ -40,8 +40,33 @@ Move from ngrok + local machine to an always-on hosted service.
 
 Expand coverage to all cities EcoSolar operates in.
 
+**Current state (2026-09-11):** `forms_in_progress/` is the active staging pipeline for this
+phase — 6 cities now have real field mappings tested against live JobNimbus data (Fountain
+Valley, Huntington Beach, Westminster, Anaheim, Fullerton, LA County), alongside Garden
+Grove's own production form. See `forms_in_progress/README.md` for the architecture (one
+shared registry/data-pull/fill pipeline, not a copy-pasted script per city) and the recipe for
+onboarding what's left, currently split across three folders by readiness:
+- `pending_forms_fillable/` — already fillable, no mapping written yet (fastest path): Irvine,
+  Kern County, Long Beach (2 forms), Redlands, San Diego County, Stanton, Yorba Linda, Orange
+  (checklist form).
+- `pending_forms/` — not fillable yet, needs hand-conversion first: Anaheim B705, Corona,
+  Pomona.
+- `not_possible_forms/` — structurally blocked, not a mapping problem (Anaheim B701 needs data
+  that doesn't exist in JNB; Orange's other PDF is a scanned image with no text layer). See
+  `not_possible_forms/README.md`.
+
+Read **`GUARDRAILS.md`** before writing or reviewing any new mapping — it captures the
+conventions every city mapping so far has had to learn the hard way (never auto-fill someone
+else's legal declaration, don't guess unverified defaults, verify checkboxes by position not
+name, real overflow-margin checks, etc.).
+
+**Known gap blocking promotion to production:** `forms/registry.py` only supports one form per
+jurisdiction today. Huntington Beach and Westminster each need 2 forms registered per city —
+this needs to be generalized before any `forms_in_progress` city can graduate to `forms/`.
+
 **Additional PDF cities:**
-- Each city follows the same pattern: `forms/<city>/template.pdf`, `mapping.json`, `README.md`
+- Each promoted city follows the same pattern: `forms/<city>/template.pdf`, `mapping.json`,
+  `README.md` (see `forms/garden_grove/` as the reference)
 - Transformer may need city-specific logic (different field names, different controlled values)
 - Target: 80% field coverage per form — remaining fields flagged in the field log as manual
 
@@ -53,8 +78,16 @@ Expand coverage to all cities EcoSolar operates in.
 
 **Shared infrastructure:**
 - The transformer, JNB client, and field log are already city-agnostic
-- Registry-based routing already handles multiple cities — just add entries
+- Registry-based routing needs multi-form-per-city support before it "just handles" new cities
+  (see gap above)
 - Consider a coverage dashboard: for each city form, what % of fields are auto-filled vs. manual
+- Need a real city/address → county mapper. Some forms are county-level, not city-level (e.g.
+  LA County's declaration applies to unincorporated territory, which isn't a JNB `city` value at
+  all — matching the incorporated City of Los Angeles isn't right either, since it has its own
+  building dept separate from the county). Current stopgap in
+  `forms_in_progress/registry.py`'s `la_county` entry: a hardcoded list of known unincorporated
+  community names (Rowland Heights, Hacienda Heights) tried in order. Needs replacing with an
+  actual address/zip → county lookup before this scales past one manually-curated example.
 
 ---
 

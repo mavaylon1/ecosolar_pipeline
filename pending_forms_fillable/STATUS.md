@@ -9,6 +9,20 @@ with dummy data and render to PNG for visual QA. No reusable tool is being built
 this is a one-time job per form (see conversation: "I don't really care if we have a
 tool that works for converting all forms... I don't plan on having to convert more forms").
 
+This directory also holds forms that turned out to **already be fillable natively** — no
+hand-conversion needed, just moved here (2026-09-11) so every "ready for a mapping to be
+written" form lives in one place, regardless of whether it needed conversion work first.
+Those are marked "already fillable, no conversion done" in the table below - don't assume
+every file here went through the hand-digitizing process.
+
+**Where a form's files live changes as it progresses** (folder taxonomy, 2026-09-11):
+`pending_forms/` = not fillable yet, but possible, not started. `pending_forms_fillable/`
+(here) = fillable (native or hand-converted) but no mapping/testing started yet.
+`forms_in_progress/` = has a mapping and is being tested or has been tested against real JNB
+data — this is where a form's files move to once work starts on it, so don't expect Anaheim
+B715/Fullerton/LA County's files to stay here once they're done (see their table rows).
+`forms/` = tested and live in production. `not_possible_forms/` = structurally blocked.
+
 Scope note: only the **applicant-facing** fields are being digitized. City-staff-only
 sections (fee schedules, "Department Action" approval blocks, plan-check routing boxes)
 are intentionally skipped. Big non-solar checklist tables (e.g. Anaheim B715 page 2's
@@ -61,32 +75,54 @@ permit use case.
 
 | City | File | Status |
 |---|---|---|
-| Anaheim | B715 (Building Permit App) | ✅ Done — page 1 only (page 2's room-addition/reroof/patio grid skipped as not solar-relevant). Verified clean render. **Wired into `forms_in_progress/anaheim/` (2026-08-28)** with real JNB data — see `forms_in_progress/registry.py`. |
-| Anaheim | B701 (Permit Extension) | ⬅️ **Moved to `pending_forms/anaheim/`** (2026-08-28) — widget placement was done and verified clean, but this form doesn't fit the JNB-driven pipeline: it requests an extension on an *already-issued* permit, and 2 of its real fields (List all Permit Numbers, State Reason for Requesting an Extension) have no JobNimbus data source at all — the permit number doesn't exist until the city approves the original filing, and the extension reason is written per-request, situationally, long after job creation. Fundamentally a different kind of event than what this pipeline handles today, not a mapping problem to solve. `B701_fillable.pdf`, `B701_dummy_filled.pdf`, and its build script live in `pending_forms/anaheim/` now, kept for whenever there's a decision on how (or whether) to source that data. |
-| Anaheim | B705 (Electrical Permit) | ❌ **Not started.** Page 1 mirrors B715's layout (Date/Project Address/Describe Work/Permit#/Print Name+checkboxes/Property Owner box/Contractor box/Workers Comp box) — very similar field set to B715, should go fast reusing that pattern. Page 2 is a fee-schedule quantity table (Meter/Switch Gear, Sub Panels, Fixtures, Motors, PV Inverters/ESS Battery/EV Charger rows) — skip, it's for city fee calc, not applicant data. |
-| Fullerton | Solar Permit Application Worksheet | ✅ Done — applicant-facing fields only. Verified clean render, no overlap with any printed line/box (re-confirmed 2026-08-28 via 400dpi close-up). **Wired into `forms_in_progress/fullerton/` (2026-08-28)** with real JNB data. **Known issue:** Workers Comp Policy#, Insurance Company, and Contractor Phone sit in very narrow boxes and need forced tiny font sizes to fit — not overlapping anything, but hard to read (Contractor Phone worst at 3.5pt). License Class (9pt box) is mathematically too narrow for any text and was left unmapped entirely. Candidate for the later spacing-fixes pass, same bucket as the text-overflow work tracked in `TODO.md`. |
-| Corona | Building Plan Check App | ❌ **Not started.** Scope agreed: header/applicant fields (Project Address, Tract#, Lot#, Name/Phone/Email, Address, City/Zip, Owner Email/Phone, Construction Type, Occupancy Type) + the two Photovoltaic kW in DC / kW in AC line items from the big Electrical checklist column. Skip the rest of the huge Building/Plumbing/Electrical/Mechanical checklist grid. |
-| Pomona | Plan Check/Permit App | ❌ **Not started.** Scope agreed: header/applicant fields (Project Address, Project Owner, Contractor/Engineer/Architect, addresses, phones, emails, Contact, Description of Work, Commercial/Residential checkbox pair, the 4 Yes/No checkboxes) + the "SOLAR PANELS" sub-section (Kilowatts, # of Panels, Panel Upgrade amps, # of Branch Circuits/Breakers, Valuation). Skip the rest of the Building/Electrical/Mechanical/Plumbing checklist grid. |
-| LA County | Owner-Builder/Permit Declaration | ✅ **Done — QA complete (2026-08-28).** All 20 fields placed and dummy-filled; re-rendered at 150dpi then crop+zoomed at 400dpi on every field row individually, per the "next step" below. None show text or box overlap with a printed line or adjacent box — whatever the font-size fix left unresolved appears to have since been cleaned up. One minor cosmetic note: the Workers Comp Expiration Date value runs up against a leftover `/` character from the original form's day/month/year blank format — not an overlap, just slightly cluttered. **Mapping written in `forms_in_progress/la_county/` (2026-08-28)** but not yet filled with real data — no JNB job matched city="Los Angeles County" (it's unincorporated territory; jobs there would be filed under an actual community name, unknown). Mapping intentionally only covers the Licensed Contractor's + Workers' Comp Declaration sections — Owner-Builder Declaration and Lobbyist Ordinance Certification are unmapped for the same reason as Westminster's declaration. |
-| Orange | Photovoltaic Permit Application | Not in scope — this one is a scanned image with no text layer at all, explicitly called out earlier as the hard case. Not part of this "simple forms" batch. |
+| Anaheim | B715 (Building Permit App) | ✅ Done — page 1 only (page 2's room-addition/reroof/patio grid skipped as not solar-relevant). Verified clean render. **Moved to `forms_in_progress/anaheim/` (2026-09-11)** along with its build script and raw source — tested against real JNB data, see `forms_in_progress/registry.py`. |
+| Anaheim | B701 (Permit Extension) | ⬅️ **Moved to `not_possible_forms/anaheim/`** (2026-09-11) — see `not_possible_forms/README.md` for why (needs a permit number and extension reason that don't exist in JNB). Widget placement itself was done and verified clean. |
+| Anaheim | B705 (Electrical Permit) | ❌ **Not started**, still flat, lives in `pending_forms/anaheim/`. Page 1 mirrors B715's layout (Date/Project Address/Describe Work/Permit#/Print Name+checkboxes/Property Owner box/Contractor box/Workers Comp box) — very similar field set to B715, should go fast reusing that pattern. Page 2 is a fee-schedule quantity table (Meter/Switch Gear, Sub Panels, Fixtures, Motors, PV Inverters/ESS Battery/EV Charger rows) — skip, it's for city fee calc, not applicant data. |
+| Fullerton | Solar Permit Application Worksheet | ✅ Done — applicant-facing fields only. Verified clean render, no overlap with any printed line/box (re-confirmed 2026-08-28 via 400dpi close-up). **Moved to `forms_in_progress/fullerton/` (2026-09-11)** along with its build script and raw source — tested against real JNB data. **Known issue:** Workers Comp Policy#, Insurance Company, and Contractor Phone sit in very narrow boxes and need forced tiny font sizes to fit — not overlapping anything, but hard to read (Contractor Phone worst at 3.5pt). License Class (9pt box) is mathematically too narrow for any text and was left unmapped entirely. Candidate for the later spacing-fixes pass, same bucket as the text-overflow work tracked in `TODO.md`. |
+| Corona | Building Plan Check App | ❌ **Not started**, still flat, lives in `pending_forms/corona/`. Scope agreed: header/applicant fields (Project Address, Tract#, Lot#, Name/Phone/Email, Address, City/Zip, Owner Email/Phone, Construction Type, Occupancy Type) + the two Photovoltaic kW in DC / kW in AC line items from the big Electrical checklist column. Skip the rest of the huge Building/Plumbing/Electrical/Mechanical checklist grid. |
+| Pomona | Plan Check/Permit App | ❌ **Not started**, still flat, lives in `pending_forms/pomona/`. Scope agreed: header/applicant fields (Project Address, Project Owner, Contractor/Engineer/Architect, addresses, phones, emails, Contact, Description of Work, Commercial/Residential checkbox pair, the 4 Yes/No checkboxes) + the "SOLAR PANELS" sub-section (Kilowatts, # of Panels, Panel Upgrade amps, # of Branch Circuits/Breakers, Valuation). Skip the rest of the Building/Electrical/Mechanical/Plumbing checklist grid. |
+| LA County | Owner-Builder/Permit Declaration | ✅ **Done — QA complete (2026-08-28).** All 20 fields placed and dummy-filled; re-rendered at 150dpi then crop+zoomed at 400dpi on every field row individually. None show text or box overlap with a printed line or adjacent box. One minor cosmetic note: the Workers Comp Expiration Date value runs up against a leftover `/` character from the original form's day/month/year blank format — not an overlap, just slightly cluttered. **Moved to `forms_in_progress/la_county/` (2026-09-11)** along with its build script and raw source — now filled with real JNB data (a Rowland Heights job; "Los Angeles County" isn't a real JNB city value, see `ROADMAP.md` Phase 3). Mapping intentionally only covers the Licensed Contractor's + Workers' Comp Declaration sections — Owner-Builder Declaration and Lobbyist Ordinance Certification are unmapped, same reasoning as Westminster's declaration. |
+| Orange | Photovoltaic Permit Application | ⬅️ **Moved to `not_possible_forms/orange/`** (2026-09-11) — scanned image, no text layer at all. See `not_possible_forms/README.md`. |
+| Orange | Express Checklist for Residential Solar PV and ESS System | 🟡 **Already fillable, no conversion needed** (168 fields). Not yet mapped. This is a *different* Orange PDF from the scanned one above — don't confuse the two. |
+| Irvine | Minor Residential/OTC Application Package | 🟡 **Already fillable, no conversion needed** (194 fields). Not yet mapped. |
+| Kern County | Building Permit Application | 🟡 **Already fillable, no conversion needed** (86 fields). Not yet mapped. |
+| Long Beach | app-011 | 🟡 **Already fillable, no conversion needed** (162 fields). Not yet mapped. |
+| Long Beach | app-012 | 🟡 **Already fillable, no conversion needed** (127 fields). Not yet mapped. |
+| Redlands | Building Permit Application | 🟡 **Already fillable, no conversion needed** (111 fields). Not yet mapped. |
+| San Diego County | pds291 | 🟡 **Already fillable, no conversion needed** (122 fields). Not yet mapped. |
+| Stanton | Permit Application | 🟡 **Already fillable, no conversion needed** (36 fields). Not yet mapped. |
+| Yorba Linda | Building Submittal Form | 🟡 **Already fillable, no conversion needed** (51 fields). Not yet mapped. |
 
 ## Files in this directory
-- `anaheim/B715_fillable.pdf`, `anaheim/B715_dummy_filled.pdf`
-  (B701's equivalents moved to `pending_forms/anaheim/` — see table above)
-- `fullerton/SolarPermitApplication_fillable.pdf`, `fullerton/SolarPermitApplication_dummy_filled.pdf`
-- `la_county/LACountyBSDPermitDeclaration_fillable.pdf`, `la_county/LACountyBSDPermitDeclaration_dummy_filled.pdf`
-- `_build_scripts/` — the actual Python scripts used to generate each of the above (rerun with
-  `.venv/bin/python pending_forms_fillable/_build_scripts/build_<name>.py` from the repo root).
-  Each script hardcodes exact field rects (hand-verified via `search_for`/`get_drawings`, not
-  auto-detected) plus a `DUMMY` dict of sample values. Edit rects/dummy values directly and
-  rerun to regenerate.
+
+Nothing hand-converted lives here anymore — once a hand-converted form gets a mapping and is
+tested, its fillable PDF, dummy-filled QA render, build script, and raw source all move together
+into `forms_in_progress/<city>/` (see Anaheim B715, Fullerton, and LA County's rows above for
+where they went). This directory now only holds forms with no mapping/testing started yet:
+
+**Already fillable, moved here as-is (2026-09-11), no conversion work done on them:**
+- `irvine/MinorResidentialOTC_fillable.pdf`
+- `kern_county/BuildingPermitApplication_fillable.pdf`
+- `long_beach/app-011_fillable.pdf`, `long_beach/app-012_fillable.pdf`
+- `redlands/BuildingPermitApplication_fillable.pdf`
+- `san_diego_county/pds291_fillable.pdf`
+- `stanton/PermitApplication_fillable.pdf`
+- `yorba_linda/BuildingSubmittalForm_fillable.pdf`
+- `orange/ExpressChecklist_fillable.pdf`
 
 ## Next steps (in order)
+
+**Fastest path — already fillable, just needs a mapping.json written and tested against real
+JNB data** (same process as Fountain Valley, no PDF work required): Irvine, Kern County, Long
+Beach (2 forms), Redlands, San Diego County, Stanton, Yorba Linda, Orange (checklist form).
+
+**Needs hand-conversion first, then a mapping:**
 1. Anaheim B705 (reuse B715's approach/coordinates where the layout matches).
 2. Corona (scoped fields only).
 3. Pomona (scoped fields only).
-4. Once all forms are approved, the real `mapping.json` + `forms/<city>/` registry wiring
-   (like Garden Grove) is a separate follow-on task — not started, out of scope for this pass.
+
+Once any of these are approved, the real `mapping.json` + `forms/<city>/` registry wiring
+(like Garden Grove) is a separate follow-on task — not started, out of scope for this pass.
 
 LA County QA is complete (see table above). Fullerton's narrow-field legibility issue and the
 known text-overflow issue tracked in `forms_in_progress`/`TODO.md` are both deferred to a later

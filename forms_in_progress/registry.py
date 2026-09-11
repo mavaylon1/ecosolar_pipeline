@@ -14,8 +14,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 HERE = Path(__file__).parent
-PENDING = ROOT / "pending_forms"
-PENDING_FILLABLE = ROOT / "pending_forms_fillable"
+
+# Every template PDF below lives inside forms_in_progress/<city>/, next to its mapping - once a
+# form has a tested mapping, its template belongs here, not in pending_forms/pending_forms_fillable
+# (those hold forms that don't have a mapping yet). Garden Grove's "plancheck" entry is the one
+# exception - it deliberately points at the live production template in forms/.
 
 FORMS = {
     "garden_grove": {
@@ -27,7 +30,7 @@ FORMS = {
         "pinned_jnid": "132f8a31349541118fa4fb380e9ac75c",
         "forms": {
             "declaration": {
-                "template": PENDING / "garden_grove/permit-declaration-3-25-20.pdf",
+                "template": HERE / "garden_grove/permit-declaration-3-25-20.pdf",
                 "mapping": HERE / "garden_grove/mapping_declaration.json",
             },
             # Fills the ACTUAL production Garden Grove template/mapping (forms/garden_grove/)
@@ -44,7 +47,7 @@ FORMS = {
         "pinned_jnid": None,
         "forms": {
             "application": {
-                "template": PENDING / "fountain_valley/Permit Application page 1_201504201306210151.pdf",
+                "template": HERE / "fountain_valley/Permit Application page 1_201504201306210151.pdf",
                 "mapping": HERE / "fountain_valley/mapping.json",
             },
         },
@@ -54,11 +57,11 @@ FORMS = {
         "pinned_jnid": None,
         "forms": {
             "solar": {
-                "template": PENDING / "huntington_beach/Photovoltaic Solar Permit (Residential Only) Application.pdf",
+                "template": HERE / "huntington_beach/Photovoltaic Solar Permit (Residential Only) Application.pdf",
                 "mapping": HERE / "huntington_beach/mapping_solar.json",
             },
             "asbestos": {
-                "template": PENDING / "huntington_beach/Permit & Asbestos Disclosure Form.pdf",
+                "template": HERE / "huntington_beach/Permit & Asbestos Disclosure Form.pdf",
                 "mapping": HERE / "huntington_beach/mapping_asbestos.json",
             },
         },
@@ -67,16 +70,16 @@ FORMS = {
         "display_name": "Westminster",
         "pinned_jnid": None,
         "forms": {
-            # Template is the FIXED copy (built by westminster/fix_address_field.py) - the
-            # original city PDF reused the same "Address" field name for Owner/Applicant/
-            # Contractor address boxes. That's a genuine one-off edge case, not something
-            # the generic pipeline handles - see fix_address_field.py.
+            # Template is the FIXED copy (built by westminster/fix_address_field.py from the raw
+            # "Building Permit Application.pdf" also in this folder) - the original city PDF
+            # reused the same "Address" field name for Owner/Applicant/Contractor address boxes.
+            # That's a genuine one-off edge case, not something the generic pipeline handles.
             "application": {
                 "template": HERE / "westminster/Building Permit Application_fixed.pdf",
                 "mapping": HERE / "westminster/mapping_application.json",
             },
             "declaration": {
-                "template": PENDING / "westminster/Building Permit Declaration.pdf",
+                "template": HERE / "westminster/Building Permit Declaration.pdf",
                 "mapping": HERE / "westminster/mapping_declaration.json",
             },
         },
@@ -85,10 +88,10 @@ FORMS = {
         "display_name": "Anaheim",
         "pinned_jnid": None,
         "forms": {
-            # B701 (Permit Extension Request) intentionally not registered here - see
-            # pending_forms/anaheim/ and pending_forms_fillable/STATUS.md for why.
+            # B701 (Permit Extension Request) can't be mapped from JNB data at all - see
+            # not_possible_forms/README.md for why.
             "b715": {
-                "template": PENDING_FILLABLE / "anaheim/B715_fillable.pdf",
+                "template": HERE / "anaheim/B715_fillable.pdf",
                 "mapping": HERE / "anaheim/mapping_b715.json",
             },
         },
@@ -98,17 +101,24 @@ FORMS = {
         "pinned_jnid": None,
         "forms": {
             "application": {
-                "template": PENDING_FILLABLE / "fullerton/SolarPermitApplication_fillable.pdf",
+                "template": HERE / "fullerton/SolarPermitApplication_fillable.pdf",
                 "mapping": HERE / "fullerton/mapping.json",
             },
         },
     },
     "la_county": {
         "display_name": "Los Angeles County",
+        # "Los Angeles County" isn't a real JNB city value - it's not a city at all, and matching
+        # the incorporated City of Los Angeles isn't right either (it has its own building dept,
+        # LADBS, separate from the county). The correct test is "is this address unincorporated
+        # LA County territory," which JNB doesn't track directly - this list of known
+        # unincorporated LA County communities (tried in order until one has a job) is a stopgap
+        # until there's a real city/address -> county mapper. See ROADMAP.md Phase 3.
+        "jnb_city": ["Rowland Heights", "Hacienda Heights"],
         "pinned_jnid": None,
         "forms": {
             "declaration": {
-                "template": PENDING_FILLABLE / "la_county/LACountyBSDPermitDeclaration_fillable.pdf",
+                "template": HERE / "la_county/LACountyBSDPermitDeclaration_fillable.pdf",
                 "mapping": HERE / "la_county/mapping.json",
             },
         },

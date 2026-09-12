@@ -21,24 +21,24 @@ to the same data every other form uses — it's specifically those two fields th
 
 **What would unblock it:** if EcoSolar starts tracking issued permit numbers in JobNimbus (e.g. a
 custom field populated after city approval) and adopts a convention for extension requests
-(perhaps a separate JNB record type or a note field), this could move to `pending_forms_fillable/`
-— the widget placement (`B701_fillable.pdf`) is already done and verified clean.
+(perhaps a separate JNB record type or a note field), this could move to `forms_in_progress/` for
+mapping — the widget placement (`B701_fillable.pdf`) is already done and verified clean.
 
-**Files:** `B701-PERMIT EXTENSION REQUEST FORM_202508282224398561.pdf` (raw), `B701_fillable.pdf`
-(hand-converted, widgets placed and verified), `B701_dummy_filled.pdf` (QA render),
-`build_anaheim_b701.py` (regenerates the fillable copy from the raw original).
+**Files:** `B701_fillable.pdf` (hand-converted, widgets placed and verified). The raw source, QA
+render, and the one-time conversion script that produced this file have been retired — their job
+was already done and reproducing them isn't expected to be needed again.
 
 ## Orange — Photovoltaic Permit Application
 
-**Why it's blocked:** scanned image, no text layer at all. Every other flat-PDF conversion in
-`pending_forms_fillable/` relied on `page.search_for("label text")` to find exact label positions
-before placing a field next to it — that requires a real text layer, which this file doesn't have.
-Coordinates would have to be eyeballed from the image directly, which is far more error-prone and
-wasn't judged worth it for this pass.
+**Why it's blocked:** scanned image, no text layer at all. Every flat-PDF conversion this pipeline
+has done (see `docs/PENDING_FORMS_CONVERSION_NOTES.md`) relied on `page.search_for("label text")`
+to find exact label positions before placing a field next to it — that requires a real text layer,
+which this file doesn't have. Coordinates would have to be eyeballed from the image directly,
+which is far more error-prone and wasn't judged worth it for this pass.
 
 Note: Orange has a *second* form — "Express Checklist for Residential Solar PV and ESS System" —
-which is unrelated and already fillable; that one lives in `pending_forms_fillable/orange/` and is
-not blocked. Don't confuse the two.
+which is unrelated and already fillable; that one lives in `ask_ecosolar/orange/` (blocked on an
+EcoSolar decision about scope, not structurally impossible like this one). Don't confuse the two.
 
 **What would unblock it:** either a genuinely scanned-PDF-capable conversion approach (OCR-assisted
 coordinate finding, or just careful manual eyeballing against the rendered image), or asking the

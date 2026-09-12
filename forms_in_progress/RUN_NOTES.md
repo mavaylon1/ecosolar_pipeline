@@ -124,7 +124,10 @@ with licensed contractors" is checked now.
 
 ## Summary of what's still needed before these can go live
 
-Same list as `pending_forms/JNB_FIELD_MAPPING.md`'s open decisions, confirmed real by this test run:
+Confirmed real by this test run (`pending_forms/JNB_FIELD_MAPPING.md`, the doc this list
+originally echoed, no longer exists — `pending_forms/` was fully retired 2026-09-12):
 real values for contractor's business address/email, license expiration date, workers' comp
 carrier + policy + expiration, and city business license numbers. Plus the Westminster shared-
-address-field issue needs a decision (can't be fixed in mapping alone).
+address-field issue needs a decision (can't be fixed in mapping alone). Per EcoSolar's decision
+2026-09-12: workers' comp and the two license-expiration fields are staying unmapped/blank -
+no JNB tracking is being added for them, staff fills those by hand on the printed output.

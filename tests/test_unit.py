@@ -3,7 +3,6 @@ Tier 1 — Unit tests. No JNB calls, no external dependencies.
 Tests transformer logic, calculations, and field parsing in isolation.
 """
 
-import pytest
 from pipeline.transformer import (
     build_permit_data,
     _calc_valuation,

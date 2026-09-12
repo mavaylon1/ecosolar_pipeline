@@ -1,0 +1,11 @@
+{
+  "template_id": "orange_express_checklist",
+  "mode": "fillable_acroform",
+  "_note": "This form is fundamentally different from every other form processed this session - it isn't a data-collection application, it's a ~150-question Y/N code-compliance self-certification checklist (rapid shutdown 120% rule calculations, ESS installation location, bollard/wheel-barrier specs, roof-plane placement relative to the PV array, fire/smoke detection requirements, rafter/truss spacing). Every Y/N answer is a genuine per-installation engineering determination that depends on the actual system design and site conditions - none of it can be safely inferred from a JNB job record, so none of the ~150 checkboxes are mapped (this goes beyond GUARDRAILS.md rule 2's 'don't guess unverified defaults' - these aren't defaults to guess, they're compliance attestations that must come from reviewing the actual plan set). Only the identification block at the bottom of page 5 is mapped: Job Address, Contractor/Installer, License/Class, Phone. 'Permit' (permit number) is staff-assigned, left unmapped. Signature/Date left blank (GUARDRAILS.md rule 3).",
+  "fields": {
+    "property.job_address": { "pdf_field_name": "Job Address", "required": true },
+    "contractor.contractor_name": { "pdf_field_name": "ContractorInstaller" },
+    "contractor.contractor_license_class_no": { "pdf_field_name": "License   Class" },
+    "contractor.contractor_phone": { "pdf_field_name": "Phone" }
+  }
+}

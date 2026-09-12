@@ -1,0 +1,31 @@
+{
+  "template_id": "pomona_plan_check_permit_application",
+  "mode": "fillable_acroform",
+  "_note": "The 4 Yes/No questions (fire sprinklers, public school, mobile home, soil disturbance) are per-job judgment calls with no JNB source - intentionally left unmapped rather than guessed, even though most EcoSolar residential jobs would answer 'No' to all four. Solar Panel Upgrade checkbox/amps and Branch Circuits have no JNB source either - not tracked.",
+  "fields": {
+    "property.job_address": { "pdf_field_name": "Project Address", "required": true },
+    "owner.property_owner": { "pdf_field_name": "Project Owner", "required": true },
+    "contractor.contractor_name": { "pdf_field_name": "Contractor Engineer Architect" },
+    "owner.homeowner_address": { "pdf_field_name": "Owner Address" },
+    "contractor.contractor_license": { "pdf_field_name": "Contractor License Number" },
+    "contractor.contractor_class": { "pdf_field_name": "Contractor Class Code" },
+    "owner.homeowner_city_zip": { "pdf_field_name": "Owner City State Zip" },
+    "contractor.contractor_address": { "pdf_field_name": "Contractor Address" },
+    "owner.homeowner_phone": { "pdf_field_name": "Owner Phone Number" },
+    "contractor.contractor_city_zip": { "pdf_field_name": "Contractor City State Zip" },
+    "owner.homeowner_email": { "pdf_field_name": "Owner Email" },
+    "contractor.contractor_phone_email": { "pdf_field_name": "Contractor Phone Email" },
+    "applicant.applicant_name": { "pdf_field_name": "Notify Contact" },
+    "applicant.applicant_phone": { "pdf_field_name": "Notify Phone" },
+    "applicant.applicant_email": { "pdf_field_name": "Notify Email" },
+    "project.job_description": {
+      "pdf_field_name": "Description Of Work",
+      "required": true
+    },
+    "project.use_type.commercial": { "pdf_field_name": "Check Commercial", "type": "checkbox" },
+    "project.use_type.residential": { "pdf_field_name": "Check Residential", "type": "checkbox" },
+    "solar.solar_kw_ac": { "pdf_field_name": "Solar Kilowatts" },
+    "solar.solar_panel_count": { "pdf_field_name": "Solar Panel Count" },
+    "project.valuation": { "pdf_field_name": "Solar Valuation" }
+  }
+}

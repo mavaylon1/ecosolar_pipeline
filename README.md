@@ -2,11 +2,15 @@
 
 Automated pipeline that fills city permit application PDFs using job data from JobNimbus. An engineer fills a small number of solar-specific fields in JNB; the pipeline fetches the job, fills the form, and attaches the completed PDF and a field log back to the JNB job record.
 
+There's no live service — this runs on demand today, and will eventually run from a scheduled
+(cron) script that pulls jobs, checks status, and fills forms in a batch. That script doesn't
+exist yet; see `docs/ROADMAP.md`.
+
 ---
 
 ## Setup
 
-**Requirements:** Python 3.12+, ngrok (for local webhook testing)
+**Requirements:** Python 3.12+
 
 ```bash
 git clone https://github.com/mavaylon1/ecosolar_pipeline.git
@@ -24,36 +28,29 @@ The pipeline reads `JOBNIMBUS_API_KEY` from `~/.env`. Make sure that file exists
 JOBNIMBUS_API_KEY=your_key_here
 ```
 
+`pipeline` and `forms` live under `src/` — `conftest.py` puts `src/` on `sys.path` for tests
+automatically. Running any script under `src/` directly does the same via its own
+`sys.path.insert(...)` line, so no separate install step is needed.
+
 ---
 
-## Running Locally
+## Running It
 
-**Start the webhook server:**
+There's no server to start. To process one job right now, call the pipeline function directly:
+
 ```bash
-python server.py
-# Running on http://127.0.0.1:8000
+.venv/bin/python -c "
+import sys; sys.path.insert(0, 'src')
+from pipeline.runner import run_pipeline
+run_pipeline('<job-jnid>')
+"
 ```
 
-**Expose it publicly via ngrok (second terminal):**
-```bash
-ngrok http 8000
-# Forwarding: https://abc123.ngrok-free.app → http://localhost:8000
-```
+This fetches the job + contact from JNB, fills the right city's PDF, and attaches the filled
+PDF and a field log back to the JNB job record.
 
-**Health check:**
-```bash
-curl https://abc123.ngrok-free.app/health
-# {"status": "ok"}
-```
-
-**Manually trigger the pipeline against a real JNB job:**
-```bash
-curl -X POST http://localhost:8000/webhook \
-  -H "Content-Type: application/json" \
-  -d '{"jnid": "<job-jnid>"}'
-```
-
-On success, a filled PDF and field log are attached to the JNB job record.
+To preview a fill without attaching anything back to JNB (useful while developing a mapping),
+use the Tier 2 test below instead — it saves its output locally to `output/` for inspection.
 
 ---
 
@@ -74,84 +71,71 @@ Output files are saved to `output/` (gitignored):
 - `output/field_log_<jnid>.txt` — human-readable mapping of JNB fields → PDF fields
 - `output/preview_<jnid>.pdf` — the filled PDF, open to visually verify
 
-### Tier 3 — End-to-end (creates and archives JNB records, manual only)
-```bash
-# Direct webhook POST — tests everything except the JNB automation trigger
-pytest tests/test_e2e.py
-
-# Full trigger chain — creates a job, then changes its status to Permit so JNB fires the webhook automatically
-pytest tests/test_e2e.py --full-trigger
-```
-
-> Requires the JNB automation rule to be configured: **Trigger = Job Status Changed → New Status = Permit → Action = Webhook → your URL**.
-> Tier 3 creates real JNB records and archives them on cleanup. Run sparingly — on initial setup, after infrastructure changes, or before deploying to production.
-
 ---
 
 ## Adding a New City Form
 
-1. Create `forms/<city_name>/` directory
-2. Add `template.pdf` — the city's fillable PDF
-3. Add `mapping.json` — maps schema keys to PDF field names (use `forms/garden_grove/mapping.json` as a template)
-4. Add `README.md` — documents every field source, calculation, and controlled value (use `forms/garden_grove/README.md` as a template)
-5. Register the city in `forms/registry.py`:
+New cities are drafted and tested in `forms_in_progress/` first, **not** added directly to
+`forms/` — see `forms_in_progress/README.md` for that recipe (one shared registry/data-pull/fill
+pipeline, not a copy-pasted script per city). `forms/` holds only cities that have already been
+tested against real JNB data and are ready for production use.
+
+Once a `forms_in_progress/` city is confirmed accurate, promoting it means:
+1. Move its `template.pdf` + `mapping.json` from `forms_in_progress/<city>/` into `forms/<city>/`
+2. Add a `README.md` documenting every field source, calculation, and controlled value (use
+   `forms/garden_grove/README.md` as a template)
+3. Register it in `src/forms/registry.py`:
    ```python
    "new city name": {
        "mapping": _FORMS_DIR / "new_city_name" / "mapping.json",
        "template": _FORMS_DIR / "new_city_name" / "template.pdf",
    }
    ```
-6. Add any city-specific transformer logic to `pipeline/transformer.py`
+4. Add any city-specific transformer logic to `src/pipeline/transformer.py`
+
+`src/forms/registry.py` currently supports only one form per jurisdiction — Huntington Beach and
+Westminster each need two, so that needs generalizing before either can be promoted as-is (see
+`docs/ROADMAP.md`).
 
 ---
 
 ## Project Structure
 
 ```
-server.py                    Flask webhook server (POST /webhook, GET /health)
-pipeline/
-  jnb_client.py              All JNB API calls — fetch, create, archive, attach
-  transformer.py             JNB job + contact → permit data schema
-  runner.py                  Orchestrates pipeline, generates and attaches field log
-forms/
-  registry.py                Maps jurisdiction name → mapping + template
-  fill.py                    PDF AcroForm filler (PyMuPDF)
+src/                          All code. Nothing outside src/ is imported as Python - forms/,
+                               forms_in_progress/, etc. below hold data (PDFs, mapping.json),
+                               not code, even though some share a name with a src/ package.
+  pipeline/
+    jnb_client.py              All JNB API calls — fetch, create, archive, attach
+    transformer.py             JNB job + contact → permit data schema
+    runner.py                  run_pipeline(jnid) — fetch, fill, attach, for one job
+  forms/
+    registry.py                Maps jurisdiction name → mapping + template (in the root forms/)
+    fill.py                    PDF AcroForm filler (PyMuPDF)
+  forms_in_progress/           Draft-city driver scripts — see forms_in_progress/README.md
+docs/                          README.md stays at root (GitHub renders it as the repo homepage);
+                               everything else lives here:
+  ROADMAP.md                   Phase plan
+  GUARDRAILS.md                Conventions every city/form mapping must follow — read before
+                                writing or reviewing one
+  TODO.md                      Known issues not yet fixed
+  PENDING_FORMS_CONVERSION_NOTES.md   Hand-conversion technique reference (flat PDF → fillable)
+forms/                         DATA ONLY — cities tested and ready for production use
   garden_grove/
-    template.pdf             Garden Grove permit application PDF template
-    mapping.json             Schema key → PDF field name mapping
-    README.md                Field source documentation for Garden Grove
-reports/                     Placeholder for portal report outputs (Phase 3)
+    template.pdf                Garden Grove permit application PDF template
+    mapping.json                Schema key → PDF field name mapping
+    README.md                   Field source documentation for Garden Grove
+forms_in_progress/              DATA ONLY — draft cities being tested against real JNB data
+                                 before promotion to forms/, plus output/ (generated, safe to
+                                 delete) — see forms_in_progress/README.md
+ask_ecosolar/                   Forms with a mapping drafted (or moot) but blocked on a
+                                 question only EcoSolar can answer — see ask_ecosolar/README.md
+not_possible_forms/             Structurally blocked (data doesn't exist in JNB, or a scanned
+                                 PDF with no text layer) — see not_possible_forms/README.md
+reports/                        Placeholder for portal report outputs (Phase 3)
 tests/
-  test_unit.py               Tier 1 — unit tests, no external calls
-  test_local_preview.py      Tier 2 — read-only JNB integration test
-  test_e2e.py                Tier 3 — full pipeline end-to-end test
-conftest.py                  Shared pytest CLI options
-.github/workflows/daily.yml  Tiers 1 & 2 run daily at 9am PT via GitHub Actions
-output/                      Local test artifacts (gitignored)
+  test_unit.py                  Tier 1 — unit tests, no external calls
+  test_local_preview.py         Tier 2 — read-only JNB integration test
+conftest.py                     Puts src/ on sys.path for every test; shared pytest CLI options
+output/                         Local test artifacts (gitignored)
 ```
-
-**Only `server.py`, `pipeline/`, and `forms/` are live** — what actually runs in production. Everything
-below is exploratory groundwork for future cities, not wired into the running pipeline:
-
-```
-forms_in_progress/           Draft city forms with a mapping written, being tested or tested
-                              against real JNB data, before promotion to forms/ — see
-                              forms_in_progress/README.md
-pending_forms_fillable/       Fillable PDFs (native or hand-converted) with no mapping
-                              written yet — see pending_forms_fillable/STATUS.md
-pending_forms/                Not fillable yet, but possible — conversion not started
-not_possible_forms/           Structurally blocked (data doesn't exist in JNB, or a scanned
-                              PDF with no text layer) — see not_possible_forms/README.md
-TODO.md                      Known issues not yet fixed (e.g. text-overflow in forms/fill.py)
-GUARDRAILS.md                 Conventions every city/form mapping must follow — read before
-                              writing or reviewing one
-```
-
----
-
-## CI
-
-GitHub Actions runs Tier 1 and Tier 2 daily at 9am PT. Trigger a run manually from the **Actions** tab → **Daily Tests** → **Run workflow**.
-
-Required GitHub secret: `JOBNIMBUS_API_KEY`
-Optional GitHub variable: `PREVIEW_JNID` (defaults to a stable Garden Grove job)

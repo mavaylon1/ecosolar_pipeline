@@ -1,0 +1,31 @@
+{
+  "template_id": "stanton_permit_application",
+  "mode": "fillable_acroform",
+  "_note": "Generic-named checkboxes (Check Box26-37) identified by page position, not name - see build notes. PROPERTY OWNER's 'Same As Applicant' and 'Owner-Builder' checkboxes intentionally unmapped: owner is never the same as EcoSolar, and 'Owner-Builder' is the property owner's own first-person declaration (same reasoning as every other Owner-Builder section, see GUARDRAILS.md rule 1). Apt/Condo sub-checkboxes unmapped - no JNB signal distinguishes them from generic multi-family. Permit #, Square Footage have no JNB source. The final Name/Signature/Date row is a physical-signing block, left entirely blank (GUARDRAILS.md rule 3) - Signature39 is a native PDF Signature field type anyway, can't hold typed text.",
+  "fields": {
+    "business.requires_building_permit": { "pdf_field_name": "Check Box26", "type": "checkbox" },
+    "project.use_type.commercial": { "pdf_field_name": "Check Box28", "type": "checkbox" },
+    "project.use_type.residential": { "pdf_field_name": "Check Box29", "type": "checkbox" },
+    "solar_use.sfd": { "pdf_field_name": "Check Box30", "type": "checkbox" },
+    "property.job_address": { "pdf_field_name": "JOB ADDRESS", "required": true },
+    "applicant.applicant_name": { "pdf_field_name": "Name" },
+    "applicant.applicant_address": { "pdf_field_name": "Address" },
+    "applicant.applicant_phone": { "pdf_field_name": "Phone" },
+    "applicant.applicant_email": { "pdf_field_name": "Email" },
+    "owner.property_owner": { "pdf_field_name": "Same As Applicant OwnerBuilder Name", "required": true },
+    "owner.homeowner_full_address": { "pdf_field_name": "Address_2" },
+    "owner.homeowner_phone": { "pdf_field_name": "Phone_2" },
+    "owner.homeowner_email": { "pdf_field_name": "Email_2" },
+    "contractor.contractor_name": { "pdf_field_name": "Business Name" },
+    "contractor.contractor_full_address": { "pdf_field_name": "Address_3" },
+    "contractor.contractor_phone": { "pdf_field_name": "Phone_3" },
+    "contractor.contractor_email": { "pdf_field_name": "Email_3" },
+    "contractor.contractor_license": { "pdf_field_name": "State License" },
+    "contractor.contractor_class_compact": { "pdf_field_name": "Class", "fontsize": 7 },
+    "contractor.contractor_license_exp": { "pdf_field_name": "Expiration", "required": true },
+    "city_license.number": { "pdf_field_name": "City License", "required": true },
+    "project.valuation": { "pdf_field_name": "Project Valuation" },
+    "project.job_description": { "pdf_field_name": "Square Footage Project Valuation", "required": true },
+    "business.filer_is_contractor": { "pdf_field_name": "Check Box34", "type": "checkbox" }
+  }
+}

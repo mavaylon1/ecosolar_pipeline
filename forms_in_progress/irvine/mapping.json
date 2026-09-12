@@ -1,0 +1,24 @@
+{
+  "template_id": "irvine_minor_residential_otc",
+  "mode": "fillable_acroform",
+  "_note": "This PDF is a bundled 6-page e-submittal packet, not a single form. Page 1 is a document-upload checklist (which attachments to include) - not applicant data, unmapped. Page 2 ('Building Permit Application', field suffix _A) is the actual generic application and the only page mapped here - it has an explicit 'DOES THE PROPOSED SCOPE INCLUDE SOLAR PHOTOVOLTAIC INSTALLATION?' Yes/No pair (Check Box3_A/A1), confirmed always-True for EcoSolar jobs. Pages 3-6 (RTO2024 electrical/plumbing/mechanical trade-item worksheet, a nested nan decision-tree page, an unrelated embedded 'frm41-66' form, and a final e-signature page) have no solar-specific content and no reliable JNB source - left entirely unmapped; staff/applicant handles them manually. On page 2: the ADU Yes/No pair (Check Box12_A/A1) is unmapped, same reasoning as every other 'is this an ADU' question this session - no reliable JNB signal. Of the top PERMIT TYPES APPLIED FOR row, only ELECTRICAL is mapped True (solar is always electrical work); RESIDENTAL/COMMERCIAL/STRUCTURAL/NON-STRUCTURAL/PLUMBING/MECHANICAL left unmapped, too ambiguous to guess. Sprinklers/A-C Yes-No (Check Box4/5) are the property's own existing conditions, not something JNB tracks - unmapped. The EXISTING BUILDINGS scope grid (INT ALT/EXT ALT/ADDITION/etc) is unmapped - out of scope for solar. Of the RESIDENTIAL classification grid (MODELS/PRODUCTION, SFD/DET CONDO, ATT CONDO/APT), only the SFD checkbox (Check Box12h_A) is mapped via solar_use.sfd, a reliable signal since EcoSolar jobs are essentially always single-family/townhome. Signature/date fields left blank (GUARDRAILS.md rule 3).",
+  "fields": {
+    "property.job_address": { "pdf_field_name": "PROJECT ADDRESS_A", "required": true },
+    "business.filer_is_contractor": { "pdf_field_name": "ELECTRICAL_A", "type": "checkbox" },
+    "applicant.applicant_name": { "pdf_field_name": "APPLICANT/COMPANY NAME_A" },
+    "applicant.applicant_street": { "pdf_field_name": "ADDRESS_A" },
+    "applicant.applicant_city": { "pdf_field_name": "CITY_A" },
+    "applicant.applicant_zip": { "pdf_field_name": "ZIP_A" },
+    "applicant.applicant_name_trailing": { "pdf_field_name": "CONTACT_A" },
+    "applicant.applicant_phone": { "pdf_field_name": "PHONE_2A" },
+    "applicant.applicant_email": { "pdf_field_name": "EMAIL_A" },
+    "owner.property_owner": { "pdf_field_name": "OWNER OF THE PROPERTY_A", "required": true },
+    "project.permit_types.solar": { "pdf_field_name": "Check Box3_A", "type": "checkbox" },
+    "owner.homeowner_address": { "pdf_field_name": "ADDRESS_2_A" },
+    "owner.homeowner_city": { "pdf_field_name": "CITY_2_A" },
+    "owner.homeowner_phone": { "pdf_field_name": "PHONE_A" },
+    "project.job_description": { "pdf_field_name": "DESCRIPTION OF WORK_A", "required": true },
+    "project.valuation": { "pdf_field_name": "VALUATION_A" },
+    "solar_use.sfd": { "pdf_field_name": "Check Box12h_A", "type": "checkbox" }
+  }
+}

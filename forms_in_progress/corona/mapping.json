@@ -1,0 +1,17 @@
+{
+  "template_id": "corona_building_plan_check_application",
+  "mode": "fillable_acroform",
+  "_note": "Tract Number, Lot Number, Construction Type, Occupancy Type have no JNB source - left unmapped for manual entry. 'Circle One: Owner/Tenant/Applicant/Contractor' gets no field (circle-one style, not typed) - EcoSolar always files as Contractor/Applicant, so the Name/Phone/Email/Address block below it is mapped to applicant.*, not owner.*. Photovoltaic kW AC uses solar_kw_ac_only (pure AC, no DC fallback), not solar_kw_ac - Phase A found the fallback silently duplicating the DC value into the AC field when a job has no real AC reading, since both fields would otherwise show side by side (fixed 2026-09-12, see forms_in_progress/example_jobs.py).",
+  "fields": {
+    "property.job_address": { "pdf_field_name": "Project Address", "required": true },
+    "applicant.applicant_name": { "pdf_field_name": "Name" },
+    "applicant.applicant_phone": { "pdf_field_name": "Phone" },
+    "applicant.applicant_email": { "pdf_field_name": "Email" },
+    "applicant.applicant_street": { "pdf_field_name": "Address" },
+    "applicant.applicant_city_zip": { "pdf_field_name": "City Zip" },
+    "owner.homeowner_email": { "pdf_field_name": "Owner Email", "required": true },
+    "owner.homeowner_phone": { "pdf_field_name": "Owner Phone", "required": true },
+    "solar.solar_kw_dc": { "pdf_field_name": "Photovoltaic kW DC" },
+    "solar.solar_kw_ac_only": { "pdf_field_name": "Photovoltaic kW AC" }
+  }
+}

@@ -1,12 +1,12 @@
 {
   "template_id": "westminster_building_permit_application",
   "mode": "fillable_acroform",
-  "_note": "Template is the FIXED copy (Building Permit Application_fixed.pdf, built by fix_address_field.py) - the original city PDF reused the same 'Address' field name for Owner/Applicant/Contractor address boxes; the fixed copy splits it into Address/Address_2/Address_3 matching the naming pattern already used for Phone/City/State/Zip on this form.",
+  "_note": "Template is the FIXED copy (Building Permit Application_fixed.pdf) - the original city PDF reused the same 'Address' field name for Owner/Applicant/Contractor address boxes; the fixed copy splits it into Address/Address_2/Address_3 matching the naming pattern already used for Phone/City/State/Zip on this form. The one-time script that produced this fixed copy has since been retired, its job already done.",
   "fields": {
     "property.job_address": { "pdf_field_name": "Bldg Address", "required": true },
     "project.job_description": {
       "pdf_field_names": ["Description of Work", "Description of Work2"],
-      "wrap_width": 95,
+      "fontsize": 8,
       "required": true
     },
     "project.valuation": { "pdf_field_name": "Valuation" },

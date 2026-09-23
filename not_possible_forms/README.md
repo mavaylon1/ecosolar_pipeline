@@ -21,7 +21,7 @@ to the same data every other form uses — it's specifically those two fields th
 
 **What would unblock it:** if EcoSolar starts tracking issued permit numbers in JobNimbus (e.g. a
 custom field populated after city approval) and adopts a convention for extension requests
-(perhaps a separate JNB record type or a note field), this could move to `forms_in_progress/` for
+(perhaps a separate JNB record type or a note field), this could move to `forms/anaheim/` for
 mapping — the widget placement (`B701_fillable.pdf`) is already done and verified clean.
 
 **Files:** `B701_fillable.pdf` (hand-converted, widgets placed and verified). The raw source, QA

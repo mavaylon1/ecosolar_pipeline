@@ -1,0 +1,82 @@
+{
+  "template_id": "anaheim_b715_building_permit_application",
+  "mode": "fillable_acroform",
+  "_note": "Applicant Is Property Owner / Employee Of Owner and Workers Comp Exempt checkboxes intentionally unmapped - EcoSolar is always the contractor, never exempt from workers' comp. Related Permit Number, Tidemark/Master ID-style fields, and Date/Submittal-type fields have no JNB source or are staff/filing-time only - left blank.",
+  "fields": {
+    "property.job_address": {
+      "pdf_field_name": "Project Address",
+      "required": true
+    },
+    "project.job_description": {
+      "pdf_field_name": "Describe Work",
+      "required": true
+    },
+    "project.valuation": {
+      "pdf_field_name": "Valuation"
+    },
+    "applicant.applicant_name": {
+      "pdf_field_name": "Print Your Name"
+    },
+    "business.filer_is_contractor": {
+      "pdf_field_name": "Applicant Is Contractor",
+      "type": "checkbox"
+    },
+    "business.filer_employee_of_contractor": {
+      "pdf_field_name": "Employee Of Contractor",
+      "type": "checkbox"
+    },
+    "owner.property_owner": {
+      "pdf_field_name": "Property Owner Name",
+      "required": true
+    },
+    "owner.homeowner_full_address": {
+      "pdf_field_name": "Property Owner Address"
+    },
+    "owner.homeowner_phone": {
+      "pdf_field_name": "Property Owner Phone"
+    },
+    "owner.homeowner_email": {
+      "pdf_field_name": "Property Owner Email"
+    },
+    "contractor.contractor_name": {
+      "pdf_field_name": "Contractor Company Name"
+    },
+    "contractor.contractor_address": {
+      "pdf_field_name": "Contractor Address",
+      "required": true
+    },
+    "contractor.contractor_city": {
+      "pdf_field_name": "Contractor City",
+      "required": true
+    },
+    "contractor.contractor_phone": {
+      "pdf_field_name": "Contractor Phone"
+    },
+    "contractor.contractor_license": {
+      "pdf_field_name": "Contractor State License"
+    },
+    "city_license.number": {
+      "pdf_field_name": "Contractor City License"
+    },
+    "contractor.contractor_email": {
+      "pdf_field_name": "Contractor Email",
+      "required": true
+    },
+    "workers_comp.carrier": {
+      "pdf_field_name": "Workers Comp Policy Carrier"
+    },
+    "workers_comp.expiration_date": {
+      "pdf_field_name": "Workers Comp Expiration Date"
+    },
+    "workers_comp.agent_name": {
+      "pdf_field_name": "Workers Comp Agent Name"
+    },
+    "workers_comp.policy_number": {
+      "pdf_field_name": "Workers Comp Policy Number"
+    },
+    "workers_comp.phone": {
+      "pdf_field_name": "Workers Comp Agent Phone"
+    }
+  },
+  "template": "B715_fillable.pdf"
+}

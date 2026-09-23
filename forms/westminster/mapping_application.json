@@ -1,0 +1,95 @@
+{
+  "template_id": "westminster_building_permit_application",
+  "mode": "fillable_acroform",
+  "_note": "Template is the FIXED copy (Building Permit Application_fixed.pdf) - the original city PDF reused the same 'Address' field name for Owner/Applicant/Contractor address boxes; the fixed copy splits it into Address/Address_2/Address_3 matching the naming pattern already used for Phone/City/State/Zip on this form. The one-time script that produced this fixed copy has since been retired, its job already done.",
+  "fields": {
+    "property.job_address": {
+      "pdf_field_name": "Bldg Address",
+      "required": true
+    },
+    "project.job_description": {
+      "pdf_field_names": [
+        "Description of Work",
+        "Description of Work2"
+      ],
+      "fontsize": 8,
+      "required": true
+    },
+    "project.valuation": {
+      "pdf_field_name": "Valuation"
+    },
+    "owner.property_owner": {
+      "pdf_field_name": "Owner Name",
+      "required": true
+    },
+    "owner.homeowner_phone": {
+      "pdf_field_name": "Phone"
+    },
+    "owner.homeowner_address": {
+      "pdf_field_name": "Address"
+    },
+    "owner.homeowner_city": {
+      "pdf_field_name": "City"
+    },
+    "owner.homeowner_state": {
+      "pdf_field_name": "State"
+    },
+    "owner.homeowner_zip": {
+      "pdf_field_name": "Zip"
+    },
+    "applicant.applicant_name": {
+      "pdf_field_name": "Applicant Name"
+    },
+    "applicant.applicant_phone": {
+      "pdf_field_name": "Phone_2"
+    },
+    "applicant.applicant_address": {
+      "pdf_field_name": "Address_2"
+    },
+    "applicant.applicant_city": {
+      "pdf_field_name": "City_2"
+    },
+    "applicant.applicant_state": {
+      "pdf_field_name": "State_2"
+    },
+    "applicant.applicant_zip": {
+      "pdf_field_name": "Zip_2"
+    },
+    "contractor.contractor_name": {
+      "pdf_field_name": "Contractor Name"
+    },
+    "contractor.contractor_phone": {
+      "pdf_field_name": "Phone_3"
+    },
+    "contractor.contractor_address": {
+      "pdf_field_name": "Address_3",
+      "required": true
+    },
+    "contractor.contractor_city": {
+      "pdf_field_name": "City_3",
+      "required": true
+    },
+    "contractor.contractor_state": {
+      "pdf_field_name": "State_3",
+      "required": true
+    },
+    "contractor.contractor_zip": {
+      "pdf_field_name": "Zip_3",
+      "required": true
+    },
+    "contractor.contractor_license": {
+      "pdf_field_name": "State License No"
+    },
+    "contractor.contractor_class_compact": {
+      "pdf_field_name": "License Type",
+      "fontsize": 7
+    },
+    "contractor.contractor_license_exp": {
+      "pdf_field_name": "Expire Date"
+    },
+    "city_license.number": {
+      "pdf_field_name": "City License No"
+    }
+  },
+  "template": "Building Permit Application_fixed.pdf"
+}

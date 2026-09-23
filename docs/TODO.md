@@ -4,10 +4,10 @@
 
 **Status: general automated check built (2026-09-12).** `src/forms/fill.py`'s `_apply()` now
 computes the real margin (usable box width minus rendered text width at the actual font used) for
-every filled text field and flags anything under 3pt — negative margin (genuine overflow) is an
-`"error"` (flips the form's status to `needs_review`), a thin-but-still-fitting margin is a
-`"warning"` (worth a look, not a failure). This runs automatically on every `fill_pdf_form()` call,
-for every city, with no separate script to remember to run. Multi-field wrap groups
+every filled text field and flags anything under 3pt as `needs_visual_check` — whether the margin
+is negative (genuine overflow) or just thin-but-fitting, both get the same note (nothing blocks
+on either one - see `docs/GUARDRAILS.md` rule 3). This runs automatically on every
+`fill_pdf_form()` call, for every city, with no separate script to remember to run. Multi-field wrap groups
 (`pdf_field_names`) also gained a per-mapping `fontsize` override (previously hardcoded to 9pt with
 no way to change it — a `wrap_width` key existed in a few mappings but was never actually read by
 the code, silently doing nothing) and single fields gained a `max_fontsize` override (caps the
@@ -29,7 +29,7 @@ number forced in at 3.5pt) sit inside a hard-bordered printed table in the city'
 Huntington Beach, there's no blank page space to extend a widget into — growing either box would
 cross the printed column divider into the neighboring cell. The only real fix would be editing the
 city's own table layout (moving the printed divider lines), not a mapping or fill-engine change.
-Left as documented in `forms_in_progress/fullerton/mapping.json`'s `_note` rather than forced.
+Left as documented in `forms/fullerton/mapping.json`'s `_note` rather than forced.
 
 ---
 
@@ -45,8 +45,9 @@ assumes this field is always `"Yes"` or `"No"` end to end:
 - `src/forms/fill.py`'s radio handling compares the value against the button's "on" text; if it doesn't
   match (e.g. `"0"`), it just leaves the radio unselected — no error or warning is raised.
 
-**Impact:** the field log reports this as "found" (it's not empty), so nothing flags that the value
-is unrecognized. The permit PDF can go out with this question silently left blank.
+**Impact:** the VERIFY CSV reports this row as "filled" (the value isn't empty, so `_build_updates`
+never treats it as missing), so nothing flags that the value is unrecognized. The permit PDF goes
+out with this question silently left blank, and the attached report gives no hint why.
 
 **Not yet investigated:**
 - Why this job has `"0"` instead of `"Yes"`/`"No"` — two candidate explanations, unconfirmed:
@@ -58,8 +59,10 @@ is unrecognized. The permit PDF can go out with this question silently left blan
 
 **Plan (not yet built):** once the cause is confirmed, either normalize unrecognized values in the
 transformer (e.g. treat anything other than an exact "Yes" match as "No", with the raw value still
-logged) and/or have `src/forms/fill.py`'s radio handling raise a `FillIssue` when a non-empty value
-doesn't match any known on/off state, instead of silently leaving the button unset.
+logged) and/or have `src/forms/fill.py`'s radio handling raise a `FillIssue` (likely
+`needs_visual_check`, or a new category if neither existing one fits well) when a non-empty value
+doesn't match any known on/off state, instead of silently leaving the button unset with no note
+anywhere.
 
 ---
 

@@ -2,8 +2,8 @@
 
 Forms that are otherwise ready (fillable PDF + drafted `mapping.json`) but are blocked on a
 question only EcoSolar can answer — not a structural dead-end like `not_possible_forms/`, and not
-a normal "still needs mapping work" item like `forms_in_progress/`. Kept here so the blocker
-is visible and the form doesn't get silently skipped or assumed done.
+a normal "still needs mapping work" item like an unfinished city in `forms/`. Kept here so the
+blocker is visible and the form doesn't get silently skipped or assumed done.
 
 ## Kern County — Building Permit Application
 
@@ -25,11 +25,11 @@ substitute city name to try, because there's no evidence of a Kern County job un
    record anywhere in or near Kern County.
 
 **What would unblock it:** EcoSolar completing (or already having, under a name/zip we didn't
-think to check) a real Kern County job in JobNimbus. Once one exists, this form moves to
-`forms_in_progress/` and gets tested the same way as every other city. If EcoSolar has done
-Kern County work that
-predates or otherwise isn't in this JNB account, that's also worth knowing — it would mean the
-scan above can't see it and a different lookup (or manual example data) is needed instead.
+think to check) a real Kern County job in JobNimbus. Once one exists, this form moves straight
+into `forms/kern_county/` and gets tested the same way as every other city. If EcoSolar has done
+Kern County work that predates or otherwise isn't in this JNB account, that's also worth
+knowing — it would mean the scan above can't see it and a different lookup (or manual example
+data) is needed instead.
 
 **Files:** `BuildingPermitApplication_fillable.pdf` (already-fillable native PDF, no conversion
 needed), `mapping.json` (fully drafted during Phase A — covers the main application page and part

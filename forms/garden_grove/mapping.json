@@ -1,6 +1,7 @@
 {
   "template_id": "garden_grove_application_v2020_09_24",
   "mode": "fillable_acroform",
+  "template": "template.pdf",
   "fields": {
     "property.job_address": {
       "pdf_field_name": "Job Address",
@@ -84,7 +85,6 @@
     },
     "project.job_description": {
       "pdf_field_names": ["Job Description 1", "Job Description 2", "Job Description 3"],
-      "wrap_width": 95,
       "required": true
     },
     "project.valuation": {

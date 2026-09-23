@@ -1,0 +1,34 @@
+{
+  "template_id": "westminster_building_permit_declaration",
+  "mode": "fillable_acroform",
+  "_note": "The OWNER - BUILDER DECLARATION section (both its checkboxes and 'Owner Print Name') is intentionally left entirely unmapped - it's the property owner's own first-person legal declaration ('I, as owner of the property...'), not something EcoSolar as the contractor should check or pre-fill on their behalf. Matches the original caution in pending_forms/JNB_FIELD_MAPPING.md ('signed by the property owner, not EcoSolar'), which an earlier draft of this mapping had missed.",
+  "fields": {
+    "contractor.contractor_name": {
+      "pdf_field_name": "Contractor Print Name"
+    },
+    "contractor.contractor_license_class_no": {
+      "pdf_field_name": "License Class and No",
+      "fontsize": 7
+    },
+    "contractor.contractor_license_exp": {
+      "pdf_field_name": "Expiration Date"
+    },
+    "business.wc_maintain_insurance": {
+      "pdf_field_name": "I have and will maintain workers compensation insurance as required by Section 3700 of the Labor Code for the performance of the work for which this permit",
+      "type": "checkbox"
+    },
+    "workers_comp.carrier": {
+      "pdf_field_name": "Carrier"
+    },
+    "workers_comp.policy_number": {
+      "pdf_field_name": "Policy Number"
+    },
+    "applicant.applicant_name": {
+      "pdf_field_name": "Applicant Print Name"
+    },
+    "applicant.applicant_name_trailing": {
+      "pdf_field_name": "Print Name"
+    }
+  },
+  "template": "Building Permit Declaration.pdf"
+}

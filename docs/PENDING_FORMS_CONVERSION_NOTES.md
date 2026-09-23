@@ -1,11 +1,11 @@
 # Flat-PDF hand-conversion reference
 
-`pending_forms_fillable/` (the directory this file used to live in) has been fully retired
-(2026-09-12) — every city that passed through it has since moved to `forms_in_progress/`
-(mapped and tested) or `ask_ecosolar/` (blocked on an EcoSolar decision). See
-`src/forms_in_progress/registry.py` and `ask_ecosolar/README.md` for current status. This file
-is kept as a **technique reference** for the next time a city's source PDF turns out to be flat
-(no AcroForm fields) and needs hand-conversion before it can be mapped.
+`pending_forms_fillable/` and `forms_in_progress/` (the staging area this content briefly passed
+through) have both been fully retired — every city that passed through them has since moved
+straight into `forms/` (mapped and tested) or `ask_ecosolar/` (blocked on an EcoSolar decision).
+See `src/forms/registry.py` and `ask_ecosolar/README.md` for current status. This file is kept
+as a **technique reference** for the next time a city's source PDF turns out to be flat (no
+AcroForm fields) and needs hand-conversion before it can be mapped.
 
 ## Method
 

@@ -12,14 +12,24 @@ TRUE_VALUES = {True, "true", "True", "yes", "Yes", "y", "Y", "1", 1, "on", "On"}
 FALSE_VALUES = {False, "false", "False", "no", "No", "n", "N", "0", 0, "off", "Off", None, ""}
 
 
+# A category, not a severity - nothing in this pipeline blocks on an issue anymore (see
+# runner.py), so there's no "pass/fail" tier to encode here. Each category just tells whoever
+# reviews the filled PDF what kind of follow-up it needs:
+#   missing_data        - JNB doesn't have this value yet; fill it in by hand.
+#   needs_visual_check   - text may be cut off or cramped; open the PDF and look.
+#   mapping_error        - the mapping itself references something that doesn't exist; an
+#                          engineer needs to fix the mapping, not the form-filler.
+CATEGORIES = {"missing_data", "needs_visual_check", "mapping_error"}
+
+
 @dataclass
 class FillIssue:
-    severity: str
+    category: str
     field: str
     message: str
 
     def as_dict(self):
-        return {"severity": self.severity, "field": self.field, "message": self.message}
+        return {"category": self.category, "field": self.field, "message": self.message}
 
 
 def _load(path):
@@ -129,7 +139,10 @@ def _build_updates(data, mapping, available, widget_lookup=None):
             if "default" in spec:
                 value = spec["default"]
             elif required:
-                issues.append(FillIssue("error", schema_key, "Required value missing."))
+                issues.append(FillIssue(
+                    "missing_data", schema_key,
+                    "JNB doesn't have this field filled out - manual entry required.",
+                ))
                 continue
             else:
                 continue
@@ -141,7 +154,7 @@ def _build_updates(data, mapping, available, widget_lookup=None):
             parts = _split_phone(value)
             for name, part in zip(names, parts):
                 if name not in available:
-                    issues.append(FillIssue("error", schema_key, f"PDF field not found: {name}"))
+                    issues.append(FillIssue("mapping_error", schema_key, f"PDF field not found: {name}"))
                     continue
                 updates[name] = {"value": part, "type": "text", "schema_key": schema_key}
             continue
@@ -152,22 +165,22 @@ def _build_updates(data, mapping, available, widget_lookup=None):
             parts, overflow = _wrap_to_fields(value, names, widget_lookup, wrap_fontsize=wrap_fontsize)
             if overflow:
                 issues.append(FillIssue(
-                    "warning", schema_key,
+                    "needs_visual_check", schema_key,
                     f"Text too long for the {len(names)} available field(s) - dropped: {overflow!r}",
                 ))
             for name, part in zip(names, parts):
                 if name not in available:
-                    issues.append(FillIssue("error", schema_key, f"PDF field not found: {name}"))
+                    issues.append(FillIssue("mapping_error", schema_key, f"PDF field not found: {name}"))
                     continue
                 updates[name] = {"value": part, "type": "text", "schema_key": schema_key, "fontsize": wrap_fontsize}
             continue
 
         name = spec.get("pdf_field_name")
         if not name:
-            issues.append(FillIssue("error", schema_key, "Spec missing pdf_field_name."))
+            issues.append(FillIssue("mapping_error", schema_key, "Spec missing pdf_field_name."))
             continue
         if name not in available:
-            issues.append(FillIssue("error", schema_key, f"PDF field not found: {name}"))
+            issues.append(FillIssue("mapping_error", schema_key, f"PDF field not found: {name}"))
             continue
 
         updates[name] = {"value": value, "type": spec.get("type", "auto"), "schema_key": schema_key}
@@ -233,13 +246,12 @@ def _apply(doc, updates):
             # reports zero issues if this only checks for literal overflow - that's exactly how
             # Fullerton's "Project Address" passed silently at a 0.3pt margin until someone
             # happened to audit it by hand. Anything under 3pt gets flagged now, not just
-            # negative margin - genuine overflow is an error (breaks status), a thin-but-fitting
-            # margin is a warning (worth a look, not a failure).
+            # negative margin - both are worth a visual check, whether it's outright cut off
+            # or just uncomfortably tight.
             if text and margin < 3:
-                severity = "error" if margin < 0 else "warning"
                 verb = "overflows" if margin < 0 else "has under 3pt margin in"
                 overflow_issues.append(FillIssue(
-                    severity, upd.get("schema_key", widget.field_name),
+                    "needs_visual_check", upd.get("schema_key", widget.field_name),
                     f"Value {verb} field {widget.field_name!r} at {fontsize}pt (margin={margin:.1f}pt): {text!r}",
                 ))
 
@@ -279,9 +291,12 @@ def fill_pdf_form(pdf_path, data_path, mapping_path, output_path, flatten=False)
 
     not_filled = sorted(set(updates.keys()) - set(filled))
     for name in not_filled:
-        issues.append(FillIssue("error", name, "Expected field was not filled."))
+        issues.append(FillIssue("mapping_error", name, "Expected field was not filled."))
 
-    status = "passed" if not any(i.severity == "error" for i in issues) else "needs_review"
+    # Purely informational now - nothing in this pipeline blocks on issues (see runner.py),
+    # so "status" is just a quick at-a-glance signal for whoever reviews the output, not a
+    # pass/fail gate.
+    status = "passed" if not issues else "needs_review"
     return {
         "status": status,
         "input_pdf": str(pdf_path),

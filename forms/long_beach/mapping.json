@@ -1,0 +1,108 @@
+{
+  "template_id": "long_beach_app012_express_electrical_permit",
+  "mode": "fillable_acroform",
+  "_note": "This is the correct Long Beach form for solar - page 2 has a dedicated 'E12 New Rooftop Mounted Solar PV System' row with kW DC/AC, module count, microinverter count, combiner box count, panel-upgrade size, and ESS kWh fields, plus a One-Family/Two-Family building-type checkbox pair (Check Box28/29) scoped to that row. Only kW DC, kW AC, module count, and the One-Family checkbox have a real JNB source - microinverter count, combiner box count, panel-upgrade amperage, and ESS kWh aren't tracked anywhere in JNB and are left unmapped rather than guessed (GUARDRAILS.md rule 2). kW AC uses solar_kw_ac_only (pure AC, no DC fallback), not solar_kw_ac - same duplicate-value fix applied to Corona during Phase B (2026-09-12), since this row shows DC and AC side by side. Check Box29 (Two-Family) also unmapped - no JNB signal distinguishes a duplex from a single-family job. The other 27 checkboxes in the Description-Number grid (E1-E11) cover unrelated electrical work categories (subpanel swaps, EVCS, lighting/wiring alterations) - out of scope, left unmapped. Page 1's 13-way occupancy-classification grid is entirely unmapped, same reasoning as app-011 (no reliable signal to pick 1 of 13, and solar_use.sfd is already spent on the E12 row's own One-Family checkbox below - a schema key can only map to one PDF field per mapping file). Signature block left blank (GUARDRAILS.md rule 3).",
+  "fields": {
+    "property.job_address": {
+      "pdf_field_name": "PROJECT ADDRESS not mailing address",
+      "required": true
+    },
+    "project.valuation": {
+      "pdf_field_name": "CONSTRUCTION VALUATION"
+    },
+    "applicant.applicant_name": {
+      "pdf_field_name": "APPLICANT first name and last name Agent For"
+    },
+    "business.filer_is_contractor": {
+      "pdf_field_name": "Contractor",
+      "type": "checkbox"
+    },
+    "applicant.applicant_street": {
+      "pdf_field_name": "APPLICANT MAILING ADDRESS"
+    },
+    "applicant.applicant_email": {
+      "pdf_field_name": "APPLICANT EMAIL ADDRESS"
+    },
+    "applicant.applicant_city": {
+      "pdf_field_name": "CITY"
+    },
+    "applicant.applicant_state": {
+      "pdf_field_name": "STATE"
+    },
+    "applicant.applicant_zip": {
+      "pdf_field_name": "ZIP"
+    },
+    "applicant.applicant_phone": {
+      "pdf_field_name": "PHONE"
+    },
+    "owner.property_owner": {
+      "pdf_field_name": "PROPERTY OWNER first name and last name",
+      "required": true
+    },
+    "owner.homeowner_address": {
+      "pdf_field_name": "PROPERTY OWNER MAILING ADDRESS"
+    },
+    "owner.homeowner_email": {
+      "pdf_field_name": "PROPERTY OWNER EMAIL ADDRESS"
+    },
+    "owner.homeowner_city": {
+      "pdf_field_name": "CITY_2"
+    },
+    "owner.homeowner_state": {
+      "pdf_field_name": "STATE_2"
+    },
+    "owner.homeowner_zip": {
+      "pdf_field_name": "ZIP_2"
+    },
+    "owner.homeowner_phone": {
+      "pdf_field_name": "PHONE_2"
+    },
+    "contractor.contractor_name": {
+      "pdf_field_name": "CONTRACTOR first name and last name"
+    },
+    "contractor.contractor_address": {
+      "pdf_field_name": "CONTRACTOR MAILING ADDRESS"
+    },
+    "contractor.contractor_email": {
+      "pdf_field_name": "CONTRACTOR EMAIL ADDRESS"
+    },
+    "contractor.contractor_city": {
+      "pdf_field_name": "CITY_3"
+    },
+    "contractor.contractor_state": {
+      "pdf_field_name": "STATE_3"
+    },
+    "contractor.contractor_zip": {
+      "pdf_field_name": "ZIP_3"
+    },
+    "contractor.contractor_phone": {
+      "pdf_field_name": "PHONE_3"
+    },
+    "city_license.number": {
+      "pdf_field_name": "CITY BUSINESS LICENSE"
+    },
+    "city_license.expiration": {
+      "pdf_field_name": "EXPIRATION DATE"
+    },
+    "contractor.contractor_license_class_no": {
+      "pdf_field_name": "STATE LICENSE  AND TYPE"
+    },
+    "contractor.contractor_license_exp": {
+      "pdf_field_name": "EXPIRATION DATE_2"
+    },
+    "solar.solar_kw_dc": {
+      "pdf_field_name": "kW DC"
+    },
+    "solar.solar_kw_ac_only": {
+      "pdf_field_name": "kW AC"
+    },
+    "solar.solar_panel_count": {
+      "pdf_field_name": "modules"
+    },
+    "solar_use.sfd": {
+      "pdf_field_name": "Check Box28",
+      "type": "checkbox"
+    }
+  },
+  "template": "app-012_fillable.pdf"
+}

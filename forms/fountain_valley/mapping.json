@@ -1,0 +1,119 @@
+{
+  "template_id": "fountain_valley_permit_application",
+  "mode": "fillable_acroform",
+  "fields": {
+    "property.job_address": {
+      "pdf_field_name": "BUILDING ADDRESS",
+      "required": true
+    },
+    "project.job_description": {
+      "pdf_field_names": [
+        "DESCRIPTION OF WORK 1",
+        "DESCRIPTION OF WORK 2",
+        "1",
+        "2"
+      ],
+      "required": true
+    },
+    "project.valuation": {
+      "pdf_field_name": "VALUATION"
+    },
+    "owner.property_owner": {
+      "pdf_field_name": "OWNER NAME",
+      "required": true
+    },
+    "owner.homeowner_phone": {
+      "pdf_field_name": "PHONE"
+    },
+    "owner.homeowner_email": {
+      "pdf_field_name": "EMAIL ADDRESS"
+    },
+    "owner.homeowner_address": {
+      "pdf_field_name": "ADDRESS"
+    },
+    "owner.homeowner_city": {
+      "pdf_field_name": "CITY"
+    },
+    "owner.homeowner_state": {
+      "pdf_field_name": "STATE"
+    },
+    "owner.homeowner_zip": {
+      "pdf_field_name": "ZIP"
+    },
+    "applicant.applicant_name": {
+      "pdf_field_name": "APPLICANT NAME"
+    },
+    "applicant.applicant_phone": {
+      "pdf_field_name": "PHONE_2"
+    },
+    "applicant.applicant_email": {
+      "pdf_field_name": "EMAIL ADDRESS_2"
+    },
+    "applicant.applicant_address": {
+      "pdf_field_name": "ADDRESS_2"
+    },
+    "applicant.applicant_city": {
+      "pdf_field_name": "CITY_2"
+    },
+    "applicant.applicant_state": {
+      "pdf_field_name": "STATE_2"
+    },
+    "applicant.applicant_zip": {
+      "pdf_field_name": "ZIP_2"
+    },
+    "contractor.contractor_name": {
+      "pdf_field_name": "CONTRACTOR"
+    },
+    "contractor.contractor_phone": {
+      "pdf_field_name": "PHONE_3"
+    },
+    "contractor.contractor_email": {
+      "pdf_field_name": "EMAIL ADDRESS_3",
+      "required": true
+    },
+    "contractor.contractor_address": {
+      "pdf_field_name": "ADDRESS_3",
+      "required": true
+    },
+    "contractor.contractor_city": {
+      "pdf_field_name": "CITY_3",
+      "required": true
+    },
+    "contractor.contractor_state": {
+      "pdf_field_name": "STATE_3",
+      "required": true
+    },
+    "contractor.contractor_zip": {
+      "pdf_field_name": "ZIP_3",
+      "required": true
+    },
+    "contractor.contractor_license": {
+      "pdf_field_name": "STATE LICENSE"
+    },
+    "contractor.contractor_class": {
+      "pdf_field_name": "LICENSE TYPE"
+    },
+    "contractor.contractor_license_exp": {
+      "pdf_field_name": "EXP DATE"
+    },
+    "workers_comp.carrier": {
+      "pdf_field_name": "WORKERS COMP CARRIER"
+    },
+    "workers_comp.expiration_date": {
+      "pdf_field_name": "EXP DATE_2"
+    },
+    "workers_comp.policy_number": {
+      "pdf_field_name": "POLICY"
+    },
+    "workers_comp.phone": {
+      "pdf_field_name": "PHONE_4"
+    },
+    "city_license.number": {
+      "pdf_field_name": "CITY BUS LICENSE"
+    },
+    "city_license.expiration": {
+      "pdf_field_name": "EXP DATE_3"
+    }
+  },
+  "template": "Permit Application page 1_201504201306210151.pdf"
+}
